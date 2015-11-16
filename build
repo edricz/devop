@@ -1,0 +1,19 @@
+#!/bin/bash -e
+
+modules="base python2 python3 ansible"
+
+dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+# check commit hook is installed
+if [ ! -f ${dir}/.git/hooks/pre-commit ]; then
+    echo "Error: pre-commit hook not installed!"
+    echo "Please run ${dir}/ansible/bin/install-git-hook.sh"
+    exit 1
+fi
+
+for module in $modules; do
+    echo "================"
+    echo "Building $module"
+    echo "================"
+    ${dir}/${module}/build
+done

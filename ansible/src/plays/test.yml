@@ -1,0 +1,19 @@
+---
+
+- hosts: localhost
+  gather_facts: no
+  tasks:
+  - command: "sleep {{item}}"
+    async: 100
+    poll: 0
+    with_items:
+    - 5
+    - 6
+    - 7
+    register: async_results
+  - async_status:
+      jid: "{{item.ansible_job_id}}"
+    with_items: async_results.results
+    register: async_poll_results
+    until: async_poll_results.finished
+    retries: 30

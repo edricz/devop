@@ -1,0 +1,27 @@
+---
+
+- name: Create dev VPC in us-west-2
+  ec2_vpc:
+    state: present
+    cidr_block: 10.0.0.0/16
+    resource_tags: { "env":"dev" }
+    subnets:
+      - cidr: 10.0.0.0/24
+        az: us-west-2a
+        resource_tags: { "env":"dev" }
+      - cidr: 10.0.1.0/24
+        az: us-west-2b
+        resource_tags: { "env":"dev" }
+      - cidr: 10.0.2.0/24
+        az: us-west-2c
+        resource_tags: { "env":"dev" }
+    internet_gateway: True
+    route_tables:
+      - subnets:
+          - 10.0.0.0/24
+          - 10.0.1.0/24
+          - 10.0.2.0/24
+        routes:
+          - dest: 0.0.0.0/0
+            gw: igw
+    region: us-west-2

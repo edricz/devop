@@ -1,0 +1,30 @@
+---
+
+- hosts: localhost
+  connection: local
+  gather_facts: False
+  roles:
+    - aws
+
+- hosts: tag_env_dev
+  remote_user: ubuntu
+  become: True
+  pre_tasks:
+    - name: Check bootstrapped file
+      stat: path=/.bootstrapped
+      ignore_errors: true
+      register: bootstrapped
+    - apt: update_cache=yes cache_valid_time=21600
+      when: bootstrapped.stat.exists == false
+  roles:
+    - { role: base, when: "bootstrapped.stat.exists == false" }
+    - { role: fstab, when: "bootstrapped.stat.exists == false" }
+    - { role: docker, when: "bootstrapped.stat.exists == false" }
+    - { role: snmpd, when: "bootstrapped.stat.exists == false" }
+    - { role: dnsmasq, when: "bootstrapped.stat.exists == false" }
+  post_tasks:
+    - name: Create bootstrapped file
+      copy:
+        content: "{{ ansible_date_time.iso8601_micro }}"
+        dest: /.bootstrapped
+      when: bootstrapped.stat.exists == false

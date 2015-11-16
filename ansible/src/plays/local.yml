@@ -1,0 +1,12 @@
+---
+
+- hosts: localhost
+  vars_files:
+    - /etc/ansible/group_vars/all.yml
+  tasks:
+    - name: Create local ansible group
+      group: name=ansible state=present system=yes gid=1000
+    - name: Create local ansible user
+      user: name=ansible state=present group=ansible uid=1000
+  roles:
+    - ansible
