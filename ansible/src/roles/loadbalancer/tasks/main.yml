@@ -1,6 +1,8 @@
 ---
 
 - name: Create Route53 health check entry
+  delegate_to: 127.0.0.1
+  become: False
   route53_health_check:
     state: present
     ip_address: "{{ inventory_hostname }}"
@@ -9,3 +11,15 @@
     request_interval: 30
     failure_threshold: 2
   register: my_health_check
+
+- route53:
+    action: create
+    zone: "{{ domain }}"
+    type: A
+    record: "{{ ansible_eth0.ipv4.address.split('.')[1] }}.{{ domain }}"
+    value: "{{ inventory_hostname }}"
+    ttl: 60
+    # Routing policy
+    identifier: "{{ inventory_hostname }}"
+    weight: 100
+    health_check: "{{ my_health_check.health_check.id }}"
