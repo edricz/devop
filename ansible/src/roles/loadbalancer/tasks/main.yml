@@ -19,6 +19,7 @@
     command: create
     zone: "{{ domain }}"
     type: A
+    overwrite: yes
     record: "{{ ansible_eth0.ipv4.address.split('.')[1] }}.{{ domain }}"
     value: "{{ inventory_hostname }}"
     ttl: 60
