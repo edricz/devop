@@ -16,7 +16,7 @@
   delegate_to: 127.0.0.1
   become: False
   route53:
-    action: create
+    command: create
     zone: "{{ domain }}"
     type: A
     record: "{{ ansible_eth0.ipv4.address.split('.')[1] }}.{{ domain }}"
