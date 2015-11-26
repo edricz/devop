@@ -1,0 +1,23 @@
+version: 0.1
+storage:
+  s3:
+    accesskey: {{ aws_access_key_id }}
+    secretkey: {{ aws_secret_access_key }}
+    region: us-west-2
+    bucket: inme-registry
+    encrypt: false
+    secure: true
+    v4auth: true
+    chunksize: 5242880
+    rootdirectory: /v2
+  delete:
+    enabled: true
+  cache:
+    blobdescriptor: inmemory
+http:
+  addr: :5000
+  headers:
+     X-Content-Type-Options: [nosniff]
+  tls:
+    certificate: /certs/domain.crt
+    key: /certs/domain.key

@@ -28,3 +28,8 @@
         content: "{{ ansible_date_time.iso8601_micro }}"
         dest: /.bootstrapped
       when: bootstrapped.stat.exists == false
+
+- hosts: tag_tier_ops
+  become: True
+  roles:
+    - { role: registry, tags: ['registry'] }

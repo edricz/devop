@@ -1,0 +1,59 @@
+---
+
+- name: Create certificate directory
+  file: path=/local/certs state=directory
+
+- name: Copy domain certificate
+  copy:
+    content: "{{ domain_crt }}"
+    dest: /local/certs/domain.crt
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Copy domain private key
+  copy:
+    content: "{{ domain_key }}"
+    dest: /local/certs/domain.key
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Create registry configuration file
+  template:
+    src: 'config.yml'
+    dest: '/local/docker/registry-config.yml'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  notify: [ 'Restart registry' ]
+
+- name: Deploy registry container
+  docker:
+    name: registry
+    restart_policy: on-failure
+    restart_policy_retry: 5
+    image: registry:2
+    state: reloaded
+    pull: always
+    net: bridge
+    expose:
+      - 5000
+    ports:
+      - "0.0.0.0:5000:5000"
+    volumes:
+      - /local/certs:/certs
+      - /local/docker/registry-config.yml:/etc/docker/registry/config.yml
+
+- name: Register registry DNS record
+  delegate_to: 127.0.0.1
+  become: False
+  route53:
+    command: create
+    overwrite: yes
+    private_zone: no
+    zone: "{{ domain }}"
+    type: A
+    ttl: 60
+    record: "{{ registry_server }}"
+    value: "{{ ansible_eth0.ipv4.address }}"

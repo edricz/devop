@@ -1,0 +1,24 @@
+---
+
+- name: Create Route53 health check entry
+  route53_health_check:
+    state: present
+    fqdn: services.inme.io
+    type: HTTP
+    resource_path: /
+    request_interval: 30
+    failure_threshold: 2
+  register: my_health_check
+
+- name: Create Route53 DNS record
+  route53:
+    action: create
+    zone: "inme.io"
+    type: CNAME
+    record: "services.inme.io"
+    value: 0-0-0.inme.io
+    ttl: 30
+    # Routing policy
+    identifier: "host1@www"
+    weight: 100
+    health_check: "{{ my_health_check.health_check.id }}"

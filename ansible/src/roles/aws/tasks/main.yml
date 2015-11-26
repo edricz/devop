@@ -8,3 +8,7 @@
   with_items: "{{ regions }}"
 
 - include: launch_ec2s.yml env="dev"
+
+- debug: var=tag_tier_ops
+
+- include: update_route53.yml
