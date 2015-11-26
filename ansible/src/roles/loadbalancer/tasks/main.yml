@@ -1,0 +1,11 @@
+---
+
+- name: Create Route53 health check entry
+  route53_health_check:
+    state: present
+    ip_address: "{{ inventory_hostname }}"
+    type: HTTP
+    resource_path: /
+    request_interval: 30
+    failure_threshold: 2
+  register: my_health_check
