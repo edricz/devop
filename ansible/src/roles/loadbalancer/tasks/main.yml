@@ -12,7 +12,10 @@
     failure_threshold: 2
   register: my_health_check
 
-- route53:
+- name: Create Route53 weighted DNS group
+  delegate_to: 127.0.0.1
+  become: False
+  route53:
     action: create
     zone: "{{ domain }}"
     type: A
