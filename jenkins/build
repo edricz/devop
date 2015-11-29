@@ -1,0 +1,6 @@
+#!/bin/bash -e
+
+image_dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source $(dirname ${image_dir})/build.conf
+
+docker build --rm=true -t ${image_name} ${image_dir}

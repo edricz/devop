@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-modules="base python2 python3 ansible"
+modules="base python2 python3 ansible jdk jenkins"
 
 dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 

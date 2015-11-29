@@ -1,0 +1,17 @@
+---
+
+- name: Create Route53 latency DNS group
+  delegate_to: 127.0.0.1
+  become: False
+  route53:
+    command: create
+    zone: "{{ domain }}"
+    type: CNAME
+    overwrite: yes
+    record: "services.{{ domain }}"
+    value: "{{ item.id }}.{{ domain }}"
+    ttl: 300
+    # Routing policy
+    identifier: "{{ item.name }}"
+    region: "{{ item.name }}"
+  with_items: "{{ regions }}"

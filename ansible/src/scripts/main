@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -xe
 
 vault_pass_file=/home/ansible/.vault_pass
 if [ -f ${vault_pass_file} ]; then
@@ -14,5 +14,5 @@ else
 fi
 
 source /home/ansible/.bash_profile
-echo 'PS1="\[\033[34m\][ansible]\[\033[m\]>"' >> /home/ansible/.bash_profile
+echo 'PS1="\[\033[34m\][ansible]\[\033[m\]> "' >> /home/ansible/.bash_profile
 su -s /bin/bash - ansible

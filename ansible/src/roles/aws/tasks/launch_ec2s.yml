@@ -37,7 +37,7 @@
 - set_fact: eips="[]"
 
 - name: Assign elastic IP address to all instances
-  set_fact: eips="{{ eips }} + {{ lookup('aws_eips', item, env, domain).split(',') }}"
+  set_fact: eips="{{ eips }} + {{ lookup('aws_eips', item.name, env, domain).split(',') }}"
   with_items: "{{ regions }}"
 
 - name: Wait for external access to all instances

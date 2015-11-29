@@ -1,7 +1,7 @@
 ---
 
-- set_fact: region="{{ item }}"
-- set_fact: vpcs="{{ lookup('aws_vpcs', item).split(',') }}"
+- set_fact: region="{{ item.name }}"
+- set_fact: vpcs="{{ lookup('aws_vpcs', item.name).split(',') }}"
 
 - name: Create HTTP security group
   ec2_group:

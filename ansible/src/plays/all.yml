@@ -1,12 +1,14 @@
 ---
 
-- hosts: localhost
+- name: Launch AWS instances
+  hosts: localhost
   connection: local
   gather_facts: False
   roles:
     - aws
 
-- hosts: tag_env_dev
+- name: Bootstrap dev instances
+  hosts: tag_env_dev
   remote_user: ubuntu
   become: True
   pre_tasks:
@@ -29,7 +31,20 @@
         dest: /.bootstrapped
       when: bootstrapped.stat.exists == false
 
-- hosts: tag_tier_ops
+- name: Launch Docker registry service
+  hosts: tag_tier_ops
   become: True
   roles:
     - { role: registry, tags: ['registry'] }
+
+- name: Launch load balancer service
+  hosts: tag_tier_ops
+  roles:
+    - { role: loadbalancer, tags: ['loadbalancer'] }
+
+- name: Create latency based DNS entry
+  hosts: localhost
+  connection: local
+  gather_facts: False
+  tasks:
+    - include: ../roles/loadbalancer/tasks/update_route53.yml
