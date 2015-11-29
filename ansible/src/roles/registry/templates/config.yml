@@ -6,7 +6,7 @@ storage:
     region: us-west-2
     bucket: inme-registry
     encrypt: false
-    secure: true
+    secure: false
     v4auth: true
     chunksize: 5242880
     rootdirectory: /v2

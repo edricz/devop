@@ -1,5 +1,6 @@
 ---
 
-- hosts: tag_tier_ops
+- hosts: tag_jenkins_master
+  become: True
   roles:
-    - loadbalancer
+    - jenkins

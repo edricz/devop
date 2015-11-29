@@ -44,7 +44,7 @@ do_mount() {
     sudo chmod 400 /root/.s3fs
 
     # move out exiting content
-    mkdir /tmp/s3fs
+    mkdir -p /tmp/s3fs
     sudo mv $S3FS_MOUNT/* /tmp/s3fs
 
     # mount s3 file system

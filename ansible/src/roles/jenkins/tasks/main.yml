@@ -1,0 +1,22 @@
+---
+
+- name: Deploy Jenkins container
+  docker:
+    name: jenkins
+    restart_policy: on-failure
+    restart_policy_retry: 5
+    image: "{{ registry_service }}/jenkins:latest"
+    state: reloaded
+    pull: always
+    net: bridge
+    privileged: yes
+    expose:
+      - 8080
+      - 50000
+    ports:
+      - "0.0.0.0:8080:8080"
+      - "0.0.0.0:50000:50000"
+    env:
+      AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
+      AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
+      S3FS_BUCKET: "{{ s3_bucket }}"
