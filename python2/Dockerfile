@@ -13,7 +13,7 @@
 # unless prior written permission is obtained from Inme Technologies Incorporated.
 #
 
-FROM inme.io/base:latest
+FROM i-docker.inme.io/base:latest
 
 RUN apt-get install -yqq --force-yes --no-install-recommends \
       build-essential python python-dev python-virtualenv

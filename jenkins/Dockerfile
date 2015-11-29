@@ -13,15 +13,26 @@
 # unless prior written permission is obtained from Inme Technologies Incorporated.
 #
 
-FROM inme.io/jdk:latest
+FROM i-docker.inme.io/s3ql:latest
 
-# Install s3fs
-ENV S3FS_VERSION=1.79
-ENV S3FS_MOUNT=/var/ops
-ADD s3fs.sh /bin/s3fs.sh
-RUN /bin/s3fs.sh install && mkdir $S3FS_MOUNT
+# Install Java 8
+ENV JAVA_VERSION=8 JAVA_UPDATE=66 JAVA_BUILD=17 JAVA_HOME=/usr/local/lib/java
+ENV JAVA_URL="http://download.oracle.com/otn-pub/java/jdk/${JAVA_VERSION}u${JAVA_UPDATE}-b${JAVA_BUILD}/jdk-${JAVA_VERSION}u${JAVA_UPDATE}-linux-x64.tar.gz"
+ENV PATH=$PATH:${JAVA_HOME}/bin
+RUN wget --quiet \
+         --no-cookies \
+         --no-check-certificate \
+         --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" \
+         -O /tmp/jdk.tar.gz $JAVA_URL && \
+    tar xzf /tmp/jdk.tar.gz -C /tmp && \
+    rm /tmp/jdk.tar.gz && \
+    mv /tmp/jdk1* $JAVA_HOME && \
+    update-alternatives --install "/usr/bin/java" "java" "${JAVA_HOME}/bin/java" 9999 && \
+    update-alternatives --install "/usr/bin/javac" "javac" "${JAVA_HOME}/bin/javac" 9999 && \
+    update-alternatives --install "/usr/bin/javaws" "javaws" "${JAVA_HOME}/bin/javaws" 9999 && \
+    chmod a+x /usr/bin/java /usr/bin/javaws /usr/bin/javac
 
-ENV JENKINS_HOME $S3FS_MOUNT/jenkins
+ENV JENKINS_HOME /var/jenkins
 ENV JENKINS_SLAVE_AGENT_PORT 50000
 
 # Jenkins is run with user `jenkins`, uid = 1000
