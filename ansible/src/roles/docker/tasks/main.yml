@@ -40,6 +40,7 @@
   with_items:
     - /usr/local/share/ca-certificates
     - "/etc/docker/certs.d/{{ registry_service }}"
+    - "/etc/docker/certs.d/i-docker.{{ domain }}"
 
 - name: Copy domain certificate
   copy:
@@ -49,8 +50,10 @@
     group: root
     mode: 0600
   with_items:
+    - "/usr/local/share/ca-certificates/i-docker.{{ domain }}"
     - "/usr/local/share/ca-certificates/{{ registry_server }}"
     - "/etc/docker/certs.d/{{ registry_service }}/ca.crt"
+    - "/etc/docker/certs.d/i-docker.{{ domain }}/ca.crt"
 
 - name: Start docker service
   service:

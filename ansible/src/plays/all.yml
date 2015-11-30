@@ -48,3 +48,8 @@
   gather_facts: False
   tasks:
     - include: ../roles/loadbalancer/tasks/update_route53.yml
+
+- hosts: tag_jenkins_master
+  become: True
+  roles:
+    - { role: jenkins, tags: ['jenkins'] }

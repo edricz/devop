@@ -15,7 +15,7 @@ storage:
   cache:
     blobdescriptor: inmemory
 http:
-  addr: :5000
+  addr: :443
   headers:
      X-Content-Type-Options: [nosniff]
   tls:

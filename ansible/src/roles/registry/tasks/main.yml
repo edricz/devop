@@ -38,12 +38,26 @@
     pull: always
     net: bridge
     expose:
-      - 5000
+      - 443
     ports:
-      - "0.0.0.0:5000:5000"
+      - "0.0.0.0:5000:443"
     volumes:
       - /local/certs:/certs
       - /local/docker/registry-config.yml:/etc/docker/registry/config.yml
+  register: result
+
+- debug: var=result
+- debug: var=docker_containers
+
+- name: Add 
+  lineinfile:
+    dest: /etc/hosts
+    regexp: "i-docker.{{ domain }}"
+    line: "{{ docker_containers[0].NetworkSettings.IPAddress }} i-docker.{{ domain }}"
+    owner: root
+    group: root
+    mode: 0644
+  when: docker_containers[0].NetworkSettings.IPAddress is defined
 
 - name: Register registry DNS record
   delegate_to: 127.0.0.1
