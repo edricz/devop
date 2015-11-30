@@ -3,7 +3,9 @@
 # move out exiting content
 mkdir -p /tmp/home
 sudo mv $JENKINS_HOME/* /tmp/home
+export MOUNT_DIR=$JENKINS_HOME
 
+# mount s3ql file system
 /bin/s3ql.sh mount
 
 # copy back existing content
