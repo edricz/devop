@@ -20,7 +20,7 @@
       when: bootstrapped.stat.exists == false
   roles:
     - { role: base, when: "bootstrapped.stat.exists == false" }
-    - { role: fstab, when: "bootstrapped.stat.exists == false" }
+#    - { role: fstab, when: "bootstrapped.stat.exists == false" }
     - { role: docker, when: "bootstrapped.stat.exists == false" }
     - { role: snmpd, when: "bootstrapped.stat.exists == false" }
     - { role: dnsmasq, when: "bootstrapped.stat.exists == false" }

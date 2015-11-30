@@ -32,7 +32,8 @@ RUN wget --quiet \
     update-alternatives --install "/usr/bin/javaws" "javaws" "${JAVA_HOME}/bin/javaws" 9999 && \
     chmod a+x /usr/bin/java /usr/bin/javaws /usr/bin/javac
 
-ENV JENKINS_HOME /var/jenkins
+ENV MOUNT_DIR /var/jenkins
+ENV JENKINS_HOME $MOUNT_DIR/data
 ENV JENKINS_SLAVE_AGENT_PORT 50000
 
 # Jenkins is run with user `jenkins`, uid = 1000
