@@ -1,19 +1,37 @@
 #!/bin/bash -e
 
+targets="$*"
 modules="base python2 python3 ansible s3ql jenkins"
 
 dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 # check commit hook is installed
-if [ ! -f ${dir}/.git/hooks/pre-commit ]; then
+if [ $# -eq 0 ] && [ ! -f ${dir}/.git/hooks/pre-commit ]; then
     echo "Error: pre-commit hook not installed!"
     echo "Please run ${dir}/ansible/bin/install-git-hook.sh"
     exit 1
 fi
 
+has_target() {
+    if [ -z "$targets" ]; then
+        return 0
+    fi
+
+    for target in $targets; do
+        if [ $target == $1 ]; then
+            return 0;
+        fi
+    done
+
+    return 1
+}
+
 for module in $modules; do
-    echo "================"
-    echo "Building $module"
-    echo "================"
-    ${dir}/${module}/build
+    if has_target $module; then
+        echo "================"
+        echo "Building $module"
+        echo "================"
+        ${dir}/${module}/build
+        echo ""
+    fi
 done

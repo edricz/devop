@@ -33,6 +33,7 @@ RUN wget --quiet \
     chmod a+x /usr/bin/java /usr/bin/javaws /usr/bin/javac
 
 ENV MOUNT_DIR /var/jenkins
+RUN mkdir -p $MOUNT_DIR
 ENV JENKINS_HOME $MOUNT_DIR/data
 ENV JENKINS_SLAVE_AGENT_PORT 50000
 
