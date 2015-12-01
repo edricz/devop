@@ -1,16 +1,21 @@
 #!/bin/bash -e
 
+if [ $1 == "-p" ]; then
+    push=yes
+    shift
+fi
+
 targets="$*"
 modules="base python2 python3 ansible s3ql jenkins"
 
 dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 # check commit hook is installed
-#if [ $# -eq 0 ] && [ ! -f ${dir}/.git/hooks/pre-commit ]; then
-#    echo "Error: pre-commit hook not installed!"
-#    echo "Please run ${dir}/ansible/bin/install-git-hook.sh"
-#    exit 1
-#fi
+if [ -z "$push" ] && [ ! -f ${dir}/.git/hooks/pre-commit ]; then
+    echo "Error: pre-commit hook not installed!"
+    echo "Please run ${dir}/ansible/bin/install-git-hook.sh"
+    exit 1
+fi
 
 has_target() {
     if [ -z "$targets" ]; then
@@ -26,6 +31,8 @@ has_target() {
     return 1
 }
 
+source ${dir}/build.conf
+
 for module in $modules; do
     if has_target $module; then
         echo "================"
@@ -33,5 +40,9 @@ for module in $modules; do
         echo "================"
         ${dir}/${module}/build
         echo ""
+
+        if [ ! -z "$push" ]; then
+            docker push ${image_prefix}/${dir}:latest
+        fi
     fi
 done
