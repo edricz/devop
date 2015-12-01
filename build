@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash -xe
 
 if [ $1 == "-p" ]; then
     push=yes
