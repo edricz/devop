@@ -43,6 +43,7 @@ for module in $modules; do
 
         if [ ! -z "$push" ]; then
             docker push ${image_prefix}/${dir}:latest
+            curl -X POST --data-urlencode 'payload={"text": "*${dir}* finished", "channel": "#devop", "username": "build-bot", "icon_emoji": ":package:"}' https://hooks.slack.com/services/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
         fi
     fi
 done
