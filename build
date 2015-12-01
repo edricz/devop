@@ -31,7 +31,7 @@ has_target() {
     return 1
 }
 
-source ${dir}/build.conf
+export $(grep image_prefix ${dir}/build.conf)
 
 for module in $modules; do
     if has_target $module; then
