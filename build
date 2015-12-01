@@ -31,7 +31,7 @@ has_target() {
     return 1
 }
 
-export $(grep image_prefix ${dir}/build.conf)
+export $(grep 'image_prefix=' ${dir}/build.conf)
 
 for module in $modules; do
     if has_target $module; then
@@ -42,7 +42,7 @@ for module in $modules; do
         echo ""
 
         if [ ! -z "$push" ]; then
-            docker push ${image_prefix}/${dir}:latest
+            docker push ${image_prefix}/${module}:latest
             curl -X POST --data-urlencode 'payload={"text": "*${dir}* finished", "channel": "#devop", "username": "build-bot", "icon_emoji": ":package:"}' https://hooks.slack.com/services/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
         fi
     fi
