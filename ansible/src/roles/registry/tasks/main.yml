@@ -1,7 +1,10 @@
 ---
 
 - name: Create certificate directory
-  file: path=/local/certs state=directory
+  file: path={{ item }} state=directory
+  with_items:
+    - /local/certs
+    - /local/docker
 
 - name: Copy domain certificate
   copy:
@@ -45,9 +48,6 @@
       - /local/certs:/certs
       - /local/docker/registry-config.yml:/etc/docker/registry/config.yml
   register: result
-
-- debug: var=result
-- debug: var=docker_containers
 
 - name: Add 
   lineinfile:

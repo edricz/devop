@@ -13,7 +13,7 @@
 # unless prior written permission is obtained from Inme Technologies Incorporated.
 #
 
-FROM inme.io/python2:latest
+FROM i-docker.inme.io/python2:latest
 
 ENV ANSIBLE_URL=https://github.com/ansible/ansible.git
 ENV ANSIBLE_BRANCH=v2.0.0-0.5.beta3
