@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash -e
 
 etcdctl="etcdctl --endpoint ${PUBLIC_ETCD_URL}"
 
