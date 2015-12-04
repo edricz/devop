@@ -1,4 +1,4 @@
-#!/bin/bash -xe
+#!/bin/bash -e
 
 if [ $1 == "-p" ]; then
     push=yes
@@ -6,7 +6,7 @@ if [ $1 == "-p" ]; then
 fi
 
 targets="$*"
-modules="base python2 python3 ansible s3ql jenkins"
+modules="base python2 python3 etcd ansible s3ql jenkins"
 
 dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
@@ -38,7 +38,9 @@ for module in $modules; do
         echo "================"
         echo "Building $module"
         echo "================"
-        ${dir}/${module}/build
+        image_dir=${dir}/${module}
+        source ${dir}/build.conf
+        docker build --rm=true -t ${image_name} ${image_dir}
         echo ""
 
         if [ ! -z "$push" ]; then

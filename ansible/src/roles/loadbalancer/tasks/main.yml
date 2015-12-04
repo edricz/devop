@@ -7,7 +7,7 @@
     state: present
     ip_address: "{{ inventory_hostname }}"
     type: HTTP
-    resource_path: /
+    resource_path: /healthcheck
     request_interval: 30
     failure_threshold: 2
   register: my_health_check
@@ -22,7 +22,7 @@
     overwrite: yes
     record: "{{ ansible_eth0.ipv4.address.split('.')[1] }}.{{ domain }}"
     value: "{{ inventory_hostname }}"
-    ttl: 60
+    ttl: 30
     # Routing policy
     identifier: "{{ inventory_hostname }}"
     weight: 100
