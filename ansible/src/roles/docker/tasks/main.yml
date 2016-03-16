@@ -30,7 +30,7 @@
     - cgroup-bin
     - "linux-image-extra-{{ ansible_kernel }}"
     - linux-image-extra-virtual
-    - lxc-docker
+    - docker-engine
 
 - name: Install docker python package
   pip: name=docker-py executable=pip2

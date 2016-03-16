@@ -7,4 +7,4 @@
 - include: create_security_groups.yml
   with_items: "{{ regions }}"
 
-- include: launch_ec2s.yml env="dev"
+- include: launch_ec2s.yml env="ops"

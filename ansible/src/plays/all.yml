@@ -7,8 +7,8 @@
   roles:
     - aws
 
-- name: Bootstrap dev instances
-  hosts: tag_env_dev
+- name: Bootstrap ops instances
+  hosts: tag_env_ops
   remote_user: ubuntu
   become: True
   pre_tasks:
@@ -32,13 +32,13 @@
       when: bootstrapped.stat.exists == false
 
 - name: Launch Docker registry service
-  hosts: tag_tier_ops
+  hosts: tag_tier_lb
   become: True
   roles:
     - { role: registry, tags: ['registry'] }
 
 - name: Launch load balancer service
-  hosts: tag_tier_ops
+  hosts: tag_tier_lb
   roles:
     - { role: loadbalancer, tags: ['loadbalancer'] }
 
@@ -49,7 +49,7 @@
   tasks:
     - include: ../roles/loadbalancer/tasks/update_route53.yml
 
-- hosts: tag_jenkins_master
-  become: True
-  roles:
-    - { role: jenkins, tags: ['jenkins'] }
+# - hosts: tag_jenkins_master
+#   become: True
+#   roles:
+#     - { role: jenkins, tags: ['jenkins'] }
