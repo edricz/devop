@@ -17,7 +17,7 @@ FROM i-docker.brickly.io/python3:latest
 
 # Download and install sqlite
 ENV SQLITE_VERSION 3110100
-RUN curl -ksSL -o sqlite.tgz http://www.sqlite.org/2015/sqlite-autoconf-$SQLITE_VERSION.tar.gz \
+RUN curl -ksSL -o sqlite.tgz http://www.sqlite.org/2016/sqlite-autoconf-$SQLITE_VERSION.tar.gz \
     && tar -xzf sqlite.tgz \
     && rm sqlite.tgz \
     && cd sqlite* \
