@@ -45,10 +45,9 @@ for module in $modules; do
 
         if [ ! -z "$push" ]; then
             docker push ${image_prefix}/${module}:latest
-            webhook=https://hooks.slack.com/services/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
             prefix='{"text": "*'
             suffix='* finished", "channel": "#devop", "username": "build-bot", "icon_emoji": ":package:"}'
-            curl -X POST --data-urlencode "payload=${prefix}${module}${suffix}" ${webhook}
+            curl -X POST --data-urlencode "payload=${prefix}${module}${suffix}" ${build_webhook}
         fi
     fi
 done
