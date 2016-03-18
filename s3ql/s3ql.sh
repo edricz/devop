@@ -15,7 +15,7 @@
 #
 
 bin_dir=$(dirname $(readlink -f $0))
-python_bin=/usr/local/bin/python3.4
+python_bin=/usr/local/bin/python3
 s3ql_bin_dir=/usr/local/bin
 timestamp=$(date +%Y-%m-%d_%H:%M:%S)
 
@@ -113,7 +113,7 @@ elif [ "$action" = "install" ]; then
     mkdir -p /etc/cron.d
     cronfile=/etc/cron.d/${action}-$(/usr/bin/basename ${mount_dir})-cron
     echo "Installing ${action} job at ${mount_dir}/${src_dir}"
-    echo "*/5 * * * * root ${bin_dir}/s3ql.sh ${action} ${mount_dir} ${src_dir} > ${mount_dir}/${action}.log 2&>1" > ${cronfile}
+    echo "*/5 * * * * root ${bin_dir}/s3ql.sh ${action} ${mount_dir} ${src_dir} >> ${mount_dir}/${action}.log 2&>1" > ${cronfile}
     echo "# blank line" >> ${cronfile}
     chmod 0644 ${cronfile}
 

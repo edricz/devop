@@ -1,5 +1,14 @@
 ---
 
+# # Ubuntu 16.04 does not install python2 by default
+# - name: Install Python2
+#   hosts: tag_env_ops
+#   remote_user: ubuntu
+#   become: True
+#   gather_facts: False
+#   tasks:
+#     - raw: apt-get update && apt-get install -y python
+
 - name: Launch AWS instances
   hosts: localhost
   connection: local
@@ -32,15 +41,17 @@
       when: bootstrapped.stat.exists == false
 
 - name: Launch Docker registry service
-  hosts: tag_tier_lb
+  hosts: tag_registry_yes
   become: True
   roles:
     - { role: registry, tags: ['registry'] }
+  serial: 1
 
 - name: Launch load balancer service
-  hosts: tag_tier_lb
+  hosts: tag_lb_yes
   roles:
     - { role: loadbalancer, tags: ['loadbalancer'] }
+  serial: 1
 
 - name: Create latency based DNS entry
   hosts: localhost
