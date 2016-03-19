@@ -15,7 +15,7 @@
 
 FROM i-docker.brickly.io/base:latest
 
-ENV VERSION v2.2.5
+ENV VERSION v2.3.0
 ENV URL https://github.com/coreos/etcd/releases/download/$VERSION/etcd-$VERSION-linux-amd64.tar.gz
 
 RUN curl -L $URL -o /tmp/etcd.tar.gz && \
