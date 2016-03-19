@@ -41,9 +41,9 @@
     pull: always
     net: bridge
     expose:
-      - 443
+      - 5000
     ports:
-      - "0.0.0.0:5000:443"
+      - "0.0.0.0:5000:5000"
     volumes:
       - /local/certs:/certs
       - /local/docker/registry-config.yml:/etc/docker/registry/config.yml

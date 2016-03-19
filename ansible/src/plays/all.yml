@@ -29,7 +29,7 @@
       when: bootstrapped.stat.exists == false
   roles:
     - { role: base, when: "bootstrapped.stat.exists == false" }
-#    - { role: fstab, when: "bootstrapped.stat.exists == false" }
+    - { role: fstab, when: "bootstrapped.stat.exists == false" }
     - { role: docker, when: "bootstrapped.stat.exists == false" }
     - { role: snmpd, when: "bootstrapped.stat.exists == false" }
     - { role: dnsmasq, when: "bootstrapped.stat.exists == false" }
@@ -41,24 +41,33 @@
       when: bootstrapped.stat.exists == false
 
 - name: Launch Docker registry service
-  hosts: tag_registry_yes
+  hosts: tag_env_ops
   become: True
   roles:
     - { role: registry, tags: ['registry'] }
   serial: 1
 
-- name: Launch load balancer service
-  hosts: tag_lb_yes
-  roles:
-    - { role: loadbalancer, tags: ['loadbalancer'] }
-  serial: 1
+# - name: Launch Etcd cluster membership service
+#   hosts: tag_env_ops
+#   become: True
+#   roles:
+#     - { role: etcd,
+#         etcd_discovery_url: "https://discovery.etcd.io/1beafb83fd3f88085a78ef71e6e05d94",
+#         tags: ['etcd'],
+#         when: "ec2_region == 'us-west-1'" }
 
-- name: Create latency based DNS entry
-  hosts: localhost
-  connection: local
-  gather_facts: False
-  tasks:
-    - include: ../roles/loadbalancer/tasks/update_route53.yml
+# - name: Launch load balancer service
+#   hosts: tag_lb_yes
+#   roles:
+#     - { role: loadbalancer, tags: ['loadbalancer'] }
+#   serial: 1
+
+# - name: Create latency based DNS entry
+#   hosts: localhost
+#   connection: local
+#   gather_facts: False
+#   tasks:
+#     - include: ../roles/loadbalancer/tasks/update_route53.yml
 
 # - hosts: tag_jenkins_master
 #   become: True

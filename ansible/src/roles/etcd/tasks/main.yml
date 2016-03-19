@@ -1,0 +1,33 @@
+---
+
+- name: Etcd Cluster Container
+  docker:
+    name: etcd
+    restart_policy: on-failure
+    restart_policy_retry: 5
+    image: "{{ registry_service }}/etcd:latest"
+    state: reloaded
+    pull: always
+    net: bridge
+    expose:
+      - 4001
+      - 7001
+    ports:
+      - "0.0.0.0:4001:4001"
+      - "0.0.0.0:7001:7001"
+    volumes:
+      - /local/etcd:/app/data
+    env:
+      ETCD_LISTEN_PEER_URLS: "http://0.0.0.0:7001"
+      ETCD_INITIAL_ADVERTISE_PEER_URLS: "http://{{ ansible_eth0.ipv4.address }}:7001"
+      ETCD_LISTEN_CLIENT_URLS: "http://0.0.0.0:4001"
+      ETCD_ADVERTISE_CLIENT_URLS: "http://{{ ansible_eth0.ipv4.address }}:4001"
+      ETCD_DATA_DIR: "/app/data"
+      ETCD_DISCOVERY: "{{ etcd_discovery_url }}"
+      ETCD_NAME: "{{ ansible_eth0.ipv4.address }}"
+      ETCD_SNAPSHOT_COUNT: "1000"
+      ETCD_ELECTION_TIMEOUT: "2000"
+      ETCD_HEARTBEAT_INTERVAL: "400"
+      PUBLIC_ETCD_URL: "http://i-services.{{ domain }}:4001"
+      ALERT_URL: "{{ alert_url }}"
+      ALERT_REGION: "{{ ec2_region }}"

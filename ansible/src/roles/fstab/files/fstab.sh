@@ -118,4 +118,6 @@ format_ext4 $device $mount_path
 make_swap $mount_path
 
 # link /var/lib/docker if local storage if there's enough space
-link_docker $mount_path 10000
+# Note: docker storage should stay on EBS root partition
+#
+# link_docker $mount_path 10000
