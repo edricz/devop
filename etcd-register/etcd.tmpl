@@ -57,7 +57,7 @@ except etcd.EtcdKeyNotFound:
     etcd_client.write(path, value, ttl=20)
     print('registered %s - %s' % (path, value))
 
-  {{ end }}  # {{ if $value.Env.EXTERNAL_ROLE }}
+  {{ end }}
 
   {{ if $value.Env.BACKEND_SERVICE }}
 service = "{{ $value.Env.BACKEND_SERVICE }}"
@@ -94,6 +94,6 @@ if hostPort:
     etcd_client.write(pathdir, "{{ $local.Env.HOST_IP }}:" + hostPort, ttl=30)
     print('registered %s - %s' % (pathdir, "{{ $local.Env.HOST_IP }}:" + hostPort))
 
-  {{ end }}  # {{ if $value.Env.BACKEND_SERVICE }}
+  {{ end }} 
 
-{{ end }}  # {{ range $key, $value := . }}
+{{ end }}
