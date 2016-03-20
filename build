@@ -6,7 +6,7 @@ if [ "$1" == "-p" ]; then
 fi
 
 targets="$*"
-modules="base python2 python3 etcd ansible s3ql jenkins"
+modules="base python2 python3 etcd etcd-register ansible s3ql jenkins"
 
 dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
