@@ -41,9 +41,9 @@
     pull: always
     net: bridge
     expose:
-      - 5000
+      - 443
     ports:
-      - "0.0.0.0:5000:5000"
+      - "0.0.0.0:5000:443"
     volumes:
       - /local/certs:/certs
       - /local/docker/registry-config.yml:/etc/docker/registry/config.yml
@@ -58,16 +58,3 @@
     group: root
     mode: 0644
   when: docker_containers[0].NetworkSettings.IPAddress is defined
-
-- name: Register registry DNS record
-  delegate_to: 127.0.0.1
-  become: False
-  route53:
-    command: create
-    overwrite: yes
-    private_zone: no
-    zone: "{{ domain }}"
-    type: A
-    ttl: 60
-    record: "{{ registry_server }}"
-    value: "{{ ansible_eth0.ipv4.address }}"

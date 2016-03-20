@@ -12,7 +12,7 @@
     failure_threshold: 2
   register: my_health_check
 
-- name: Create Route53 weighted DNS group
+- name: Create Route53 external weighted DNS group
   delegate_to: 127.0.0.1
   become: False
   route53:
@@ -25,5 +25,21 @@
     ttl: 30
     # Routing policy
     identifier: "{{ inventory_hostname }}"
+    weight: 100
+    health_check: "{{ my_health_check.health_check.id }}"
+
+- name: Create Route53 internal weighted DNS group
+  delegate_to: 127.0.0.1
+  become: False
+  route53:
+    command: create
+    zone: "{{ domain }}"
+    type: A
+    overwrite: yes
+    record: "i-{{ ansible_eth0.ipv4.address.split('.')[1] }}.{{ domain }}"
+    value: "{{ ansible_eth0.ipv4.address }}"
+    ttl: 30
+    # Routing policy
+    identifier: "{{ ansible_eth0.ipv4.address }}"
     weight: 100
     health_check: "{{ my_health_check.health_check.id }}"

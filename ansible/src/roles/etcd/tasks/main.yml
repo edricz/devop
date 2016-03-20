@@ -1,6 +1,6 @@
 ---
 
-- name: Etcd Cluster Container
+- name: Start etcd cluster container
   docker:
     name: etcd
     restart_policy: on-failure

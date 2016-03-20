@@ -1,0 +1,69 @@
+global
+    daemon
+    user    haproxy
+    group   haproxy
+    maxconn 65536
+    log     127.0.0.1 local0
+    log     127.0.0.1 local1 notice
+    stats   socket /var/run/haproxy_stats.sock mode 666 level admin
+
+defaults
+    log     global
+    option  dontlognull
+    maxconn 1200
+    retries 15
+    timeout connect 5s
+    timeout client  1m
+    timeout server  1m
+    option  redispatch
+    balance roundrobin
+
+listen stats :3212
+    mode http
+    stats enable
+    stats uri /
+    stats refresh 10s
+    stats auth admin:{{ service_pass }}
+
+{% raw %}
+
+{{ if exists "/roles/www" }}
+frontend www
+    mode http
+    bind 0.0.0.0:7100
+    default_backend www
+backend www
+    mode http
+    cookie SRVID insert indirect nocache maxidle 60m
+    {{ range gets "/backends/www/prod/*" }}
+    {{ $data := .Value }}
+    server {{ $data }}_container {{ $data }} cookie {{ $data }} check inter 2s rise 2 fall 2 
+    {{ end }}
+{{ end }}
+
+{{ if exists "/roles/jenkins" }}
+frontend jenkins
+    mode http
+    bind 0.0.0.0:7101
+    default_backend jenkins
+backend jenkins
+    mode http
+    {{ $data := getv "/roles/jenkins" }}
+    server {{ $data }}_container {{ $data }} check inter 2s rise 2 fall 2 
+{{ end }}
+
+{{ if exists "/roles/mariadb" }}
+frontend mariadb
+    mode tcp
+    bind 0.0.0.0:7150
+    default_backend mariadb
+backend mariadb
+    option mysql-check user haproxy post-41
+    mode tcp
+    {{ range gets "/backends/mariadb/latest/*" }}
+    {{ $data := .Value }}
+    server {{ $data }}_container {{ $data }} check inter 2s rise 2 fall 2 
+    {{ end }}
+{{ end }}
+
+{% endraw %}

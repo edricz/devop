@@ -28,7 +28,9 @@ except etcd.EtcdKeyNotFound:  # create /backends dir if it does not exist
     etcd_client.write("/backends", None, dir=True)
 
 # go through every docker container looking for the following environment variables:
-#  - EXTERNAL_ROLE: if this is set, then it's added as a single server service
+#  - EXTERNAL_ROLE: if this is set, then added it to /roles as a single server service
+#  - BACKEND_SERVICE: if this is set, then added it to /backends as a multi-server service
+
 {{ $local := . }}
 {{ range $key, $value := . }}
 
