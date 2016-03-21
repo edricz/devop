@@ -66,6 +66,19 @@ backend jenkins
     server {{ $data }}_container {{ $data }} check inter 2s rise 2 fall 2 
 {{ end }}
 
+{{ if exists "/services/registry" }}
+frontend registry
+    mode http
+    bind 0.0.0.0:7111
+    default_backend registry
+backend registry
+    mode http
+    {{ range gets "/backends/registry/*" }}
+    {{ $data := .Value }}
+    server {{ $data }}_container {{ $data }} check inter 2s rise 2 fall 2 
+    {{ end }}
+{{ end }}
+
 {{ if exists "/services/external_mariadb" }}
 frontend external_mariadb
     mode tcp
