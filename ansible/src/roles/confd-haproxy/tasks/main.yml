@@ -7,7 +7,7 @@
 - name: Copy over custom nginx binary
   docker:
     name: nginx-install
-    image: "{{ registry_service }}/nginx:latest"
+    image: "{{ registry_server }}/nginx:latest"
     state: restarted
     pull: always
     command: cp -fv /usr/sbin/nginx /target/nginx.custom
@@ -38,7 +38,7 @@
     mode: '0755'
 
 - name: Add nginx config
-  copy:
+  template:
     src: 'nginx.conf'
     dest: '/etc/nginx/nginx.conf'
     owner: 'root'
@@ -68,8 +68,8 @@
     - Reload Nginx
 
 - name: Add nginx tcp services config
-  copy:
-    src: 'etc/nginx/conf.d/lb/tcp_services.conf'
+  template:
+    src: 'tcp_services.conf'
     dest: '/etc/nginx/conf.d/lb/tcp_services.conf'
     owner: 'root'
     group: 'root'
@@ -81,7 +81,7 @@
 - name: Add HtAuth user
   htpasswd:
     path: /etc/nginx/htpasswd
-    name: ansible_user
+    name: admin
     password: "{{ service_pass }}"
 
 - name: Create confd dirs
@@ -96,16 +96,16 @@
     - /etc/confd/conf.d
 
 - name: Add service template
-  copy: 
-    src: 'etc/confd/templates/haproxy.tmpl'
+  template: 
+    src: 'haproxy.tmpl'
     dest: '/etc/confd/templates/haproxy.tmpl'
     owner: 'root'
     group: 'root'
     mode: '0644'
 
 - name: Add service config
-  copy: 
-    src: 'etc/confd/conf.d/services.toml'
+  template: 
+    src: 'services.toml'
     dest: '/etc/confd/conf.d/services.toml'
     owner: 'root'
     group: 'root'
@@ -114,16 +114,13 @@
 - name: Start Nginx service
   service: name=nginx state=started
 
-- name: Add Root Etcd Key for Roles
-  command: 'curl -sSL http://127.0.0.1:4001/v2/keys/roles -XPUT -d dir=true'
-
 - name: Start confd-haproxy container
   docker:
     privileged: True
     name: confd-haproxy
     restart_policy: on-failure
     restart_policy_retry: 5
-    image: "{{ registry_service }}/confd-haproxy:latest"
+    image: "{{ registry_server }}/confd-haproxy:latest"
     state: reloaded
     pull: always
     net: host

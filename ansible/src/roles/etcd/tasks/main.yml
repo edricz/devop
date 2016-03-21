@@ -5,7 +5,7 @@
     name: etcd
     restart_policy: on-failure
     restart_policy_retry: 5
-    image: "{{ registry_service }}/etcd:latest"
+    image: "{{ registry_server }}/etcd:latest"
     state: reloaded
     pull: always
     net: bridge
@@ -28,6 +28,6 @@
       ETCD_SNAPSHOT_COUNT: "1000"
       ETCD_ELECTION_TIMEOUT: "2000"
       ETCD_HEARTBEAT_INTERVAL: "400"
-      PUBLIC_ETCD_URL: "http://i-services.{{ domain }}:4001"
+      PUBLIC_ETCD_URL: "http://i-services.{{ internal_domain }}:4001"
       ALERT_URL: "{{ alert_url }}"
       ALERT_REGION: "{{ ec2_region }}"

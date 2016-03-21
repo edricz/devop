@@ -52,7 +52,7 @@
   become: True
   roles:
     - { role: etcd,
-        etcd_discovery_url: "https://discovery.etcd.io/8cfff9c3639e54b93dd5a802531c3932",
+        etcd_discovery_url: "https://discovery.etcd.io/dd790ff2d13a3d8af4e8cd601c1b4383",
         tags: ['etcd'],
         when: "ec2_region == 'us-west-1'" }
 
@@ -74,7 +74,7 @@
   connection: local
   gather_facts: False
   tasks:
-    - include: ../roles/loadbalancer/tasks/update_route53.yml
+    - { include: ../roles/loadbalancer/tasks/update_route53.yml, tags: ['loadbalancer'] }
 
 # - hosts: tag_jenkins_master
 #   become: True

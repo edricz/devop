@@ -17,14 +17,14 @@
   become: False
   route53:
     command: create
-    zone: "{{ domain }}"
+    zone: "{{ external_domain }}"
     type: A
     overwrite: yes
-    record: "{{ ansible_eth0.ipv4.address.split('.')[1] }}.{{ domain }}"
+    record: "{{ ansible_eth0.ipv4.address.split('.')[1] }}.{{ external_domain }}"
     value: "{{ inventory_hostname }}"
     ttl: 30
     # Routing policy
-    identifier: "{{ inventory_hostname }}"
+    identifier: "{{ hostvars[inventory_hostname]['ec2_tag_Name'] }}"
     weight: 100
     health_check: "{{ my_health_check.health_check.id }}"
 
@@ -33,13 +33,13 @@
   become: False
   route53:
     command: create
-    zone: "{{ domain }}"
+    zone: "{{ internal_domain }}"
     type: A
     overwrite: yes
-    record: "i-{{ ansible_eth0.ipv4.address.split('.')[1] }}.{{ domain }}"
+    record: "i-{{ ansible_eth0.ipv4.address.split('.')[1] }}.{{ internal_domain }}"
     value: "{{ ansible_eth0.ipv4.address }}"
     ttl: 30
     # Routing policy
-    identifier: "{{ ansible_eth0.ipv4.address }}"
+    identifier: "{{ hostvars[inventory_hostname]['ec2_tag_Name'] }}"
     weight: 100
     health_check: "{{ my_health_check.health_check.id }}"

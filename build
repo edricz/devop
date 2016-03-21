@@ -6,7 +6,7 @@ if [ "$1" == "-p" ]; then
 fi
 
 targets="$*"
-modules="base python2 python3 etcd etcd-register ansible s3ql jenkins nginx confd-haproxy"
+modules="base python2 python3 etcd etcd-register nginx confd-haproxy ansible s3ql jenkins"
 
 dir=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 

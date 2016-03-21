@@ -5,7 +5,7 @@
     name: jenkins
     restart_policy: on-failure
     restart_policy_retry: 5
-    image: "{{ registry_service }}/jenkins:latest"
+    image: "{{ registry_server }}/jenkins:latest"
     state: reloaded
     pull: always
     net: bridge

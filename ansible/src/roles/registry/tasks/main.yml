@@ -3,21 +3,21 @@
 - name: Create certificate directory
   file: path={{ item }} state=directory
   with_items:
-    - /local/certs
-    - /local/docker
+    - /local/registry/certs
+    - /local/registry/docker
 
 - name: Copy domain certificate
   copy:
-    content: "{{ domain_crt }}"
-    dest: /local/certs/domain.crt
+    content: "{{ internal_domain_crt }}"
+    dest: /local/registry/certs/domain.crt
     owner: root
     group: root
     mode: 0600
 
 - name: Copy domain private key
   copy:
-    content: "{{ domain_key }}"
-    dest: /local/certs/domain.key
+    content: "{{ internal_domain_key }}"
+    dest: /local/registry/certs/domain.key
     owner: root
     group: root
     mode: 0600
@@ -25,7 +25,7 @@
 - name: Create registry configuration file
   template:
     src: 'config.yml'
-    dest: '/local/docker/registry-config.yml'
+    dest: '/local/registry/docker/registry-config.yml'
     owner: 'root'
     group: 'root'
     mode: '0644'
@@ -45,15 +45,17 @@
     ports:
       - "0.0.0.0:5000:443"
     volumes:
-      - /local/certs:/certs
-      - /local/docker/registry-config.yml:/etc/docker/registry/config.yml
+      - /local/registry/certs:/certs
+      - /local/registry/docker/registry-config.yml:/etc/docker/registry/config.yml
+    env:
+      BACKEND_SERVICE: "registry"
   register: result
 
 - name: Add 
   lineinfile:
     dest: /etc/hosts
-    regexp: "i-docker.{{ domain }}"
-    line: "{{ docker_containers[0].NetworkSettings.IPAddress }} i-docker.{{ domain }}"
+    regexp: "{{ registry_server }}"
+    line: "{{ docker_containers[0].NetworkSettings.IPAddress }} {{ registry_server }}"
     owner: root
     group: root
     mode: 0644

@@ -27,40 +27,68 @@ listen stats :3212
 
 {% raw %}
 
-{{ if exists "/roles/www" }}
-frontend www
+{{ if exists "/services/external_www" }}
+frontend external_www
     mode http
     bind 0.0.0.0:7100
-    default_backend www
-backend www
+    default_backend external_www
+backend external_www
     mode http
     cookie SRVID insert indirect nocache maxidle 60m
-    {{ range gets "/backends/www/prod/*" }}
+    {{ range gets "/backends/external_www/*" }}
     {{ $data := .Value }}
     server {{ $data }}_container {{ $data }} cookie {{ $data }} check inter 2s rise 2 fall 2 
     {{ end }}
 {{ end }}
 
-{{ if exists "/roles/jenkins" }}
-frontend jenkins
+{{ if exists "/services/internal_www" }}
+frontend internal_www
     mode http
     bind 0.0.0.0:7101
+    default_backend internal_www
+backend internal_www
+    mode http
+    cookie SRVID insert indirect nocache maxidle 60m
+    {{ range gets "/backends/internal_www/*" }}
+    {{ $data := .Value }}
+    server {{ $data }}_container {{ $data }} cookie {{ $data }} check inter 2s rise 2 fall 2 
+    {{ end }}
+{{ end }}
+
+{{ if exists "/services/jenkins" }}
+frontend jenkins
+    mode http
+    bind 0.0.0.0:7110
     default_backend jenkins
 backend jenkins
     mode http
-    {{ $data := getv "/roles/jenkins" }}
+    {{ $data := getv "/services/jenkins" }}
     server {{ $data }}_container {{ $data }} check inter 2s rise 2 fall 2 
 {{ end }}
 
-{{ if exists "/roles/mariadb" }}
-frontend mariadb
+{{ if exists "/services/external_mariadb" }}
+frontend external_mariadb
     mode tcp
     bind 0.0.0.0:7150
-    default_backend mariadb
-backend mariadb
+    default_backend external_mariadb
+backend external_mariadb
     option mysql-check user haproxy post-41
     mode tcp
-    {{ range gets "/backends/mariadb/latest/*" }}
+    {{ range gets "/backends/external_mariadb/*" }}
+    {{ $data := .Value }}
+    server {{ $data }}_container {{ $data }} check inter 2s rise 2 fall 2 
+    {{ end }}
+{{ end }}
+
+{{ if exists "/services/internal_mariadb" }}
+frontend internal_mariadb
+    mode tcp
+    bind 0.0.0.0:7151
+    default_backend internal_mariadb
+backend internal_mariadb
+    option mysql-check user haproxy post-41
+    mode tcp
+    {{ range gets "/backends/internal_mariadb/*" }}
     {{ $data := .Value }}
     server {{ $data }}_container {{ $data }} check inter 2s rise 2 fall 2 
     {{ end }}

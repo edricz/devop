@@ -4,8 +4,6 @@ import etcd
 import sys
 from urlparse import urlparse
 
-prefix = "appcious/"
-
 # ETCD_HOST parameter must be supplied via environment variable
 etcd_host = "{{ .Env.ETCD_HOST }}"
 if not etcd_host:
@@ -21,14 +19,20 @@ if ":" in etcd_host:
 # create client connection to etcd server
 etcd_client = etcd.Client(host=host, port=int(port))
 
-# all services are added to the /backends directory
+# all services are always added to the /services directory
+try:
+    services = etcd_client.read("/services")
+except etcd.EtcdKeyNotFound:  # create /services dir if it does not exist
+    etcd_client.write("/services", None, dir=True)
+
+# multi-server services are added to the /backends directory
 try:
     backends = etcd_client.read("/backends")
 except etcd.EtcdKeyNotFound:  # create /backends dir if it does not exist
     etcd_client.write("/backends", None, dir=True)
 
 # go through every docker container looking for the following environment variables:
-#  - EXTERNAL_ROLE: if this is set, then added it to /roles as a single server service
+#  - EXTERNAL_ROLE: if this is set, then added it to /services as a single server service
 #  - BACKEND_SERVICE: if this is set, then added it to /backends as a multi-server service
 
 {{ $local := . }}
@@ -45,13 +49,8 @@ value = "{{ $local.Env.HOST_IP }}:{{ (index $value.Addresses 0).HostPort }}"
 value = "{{ $local.Env.HOST_IP }}"
     {{ end }}
 
-try:
-  etcd_client.read('/roles')
-except etcd.EtcdKeyNotFound:
-  etcd_client.write('/roles', None, dir=True)
-
 # only register this role if the existing service has disappeared
-path = '/roles/' + service
+path = '/services/' + service
 try:
     if etcd_client.read(path).value == value:
         etcd_client.write(path, value, ttl=20)
@@ -74,28 +73,17 @@ hostPort = None
 
 if hostPort:
 
-    pathdir = "/backends/" + service
+    path = "/backends/" + service
     try:
-        etcd_client.read(pathdir)
+        etcd_client.read(path)
     except etcd.EtcdKeyNotFound:
-        etcd_client.write(pathdir, None, dir=True)
+        etcd_client.write(path, None, dir=True)
 
-    pathdir += "/{{ $value.Image.Repository }}"
-    try:
-        etcd_client.read(pathdir)
-    except etcd.EtcdKeyNotFound:
-        etcd_client.write(pathdir, None, dir=True)
+    path += "/" + "{{ printf "%.*s" 12 $value.ID }}"
+    etcd_client.write(path, "{{ $local.Env.HOST_IP }}:" + hostPort, ttl=30)
+    etcd_client.write('/services/' + service, '/backends/' + service, ttl=30)
+    print('registered %s - %s' % (path, "{{ $local.Env.HOST_IP }}:" + hostPort))
 
-    pathdir += "/{{ $value.Image.Tag }}"
-    try:
-        etcd_client.read(pathdir)
-    except etcd.EtcdKeyNotFound:
-        etcd_client.write(pathdir, None, dir=True)
-
-    pathdir += "/" + "{{ printf "%.*s" 12 $value.ID }}"
-    etcd_client.write(pathdir, "{{ $local.Env.HOST_IP }}:" + hostPort, ttl=30)
-    print('registered %s - %s' % (pathdir, "{{ $local.Env.HOST_IP }}:" + hostPort))
-
-  {{ end }} 
+  {{ end }}
 
 {{ end }}

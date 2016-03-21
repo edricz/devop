@@ -4,7 +4,6 @@ export AWS_SECRET_ACCESS_KEY={{ aws_secret_access_key }}
 export SLACK_TOKEN={{ slack_token }}
 export SLACK_CHANNEL={{ slack_channel }}
 
-alias dump-vars="ansible-playbook --vault-password-file /home/ansible/.vault_pass -e host_or_group="$1" /etc/ansible/plays/dump-vars.yml"
 alias decrypt="ansible-vault decrypt --vault-password-file=/home/ansible/.vault_pass $@"
 alias encrypt="ansible-vault encrypt --vault-password-file=/home/ansible/.vault_pass $@"
 alias view="ansible-vault view --vault-password-file=/home/ansible/.vault_pass $@"
@@ -17,6 +16,10 @@ function play() {
   
     echo "**** Running Playbook $@ ****"
     ansible-playbook --vault-password-file /home/ansible/.vault_pass $@
+}
+
+function dump-hostvars() {
+    ansible -m debug -a "var=hostvars['$1']" localhost
 }
 
 cd /etc/ansible/plays/

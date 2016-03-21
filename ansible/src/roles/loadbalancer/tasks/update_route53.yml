@@ -5,11 +5,11 @@
   become: False
   route53:
     command: create
-    zone: "{{ domain }}"
+    zone: "{{ external_domain }}"
     type: CNAME
     overwrite: yes
-    record: "services.{{ domain }}"
-    value: "{{ item.id }}.{{ domain }}"
+    record: "services.{{ external_domain }}"
+    value: "{{ item.id }}.{{ external_domain }}"
     ttl: 300
     # Routing policy
     identifier: "{{ item.name }}"
@@ -21,11 +21,11 @@
   become: False
   route53:
     command: create
-    zone: "{{ domain }}"
+    zone: "{{ internal_domain }}"
     type: CNAME
     overwrite: yes
-    record: "i-services.{{ domain }}"
-    value: "i-{{ item.id }}.{{ domain }}"
+    record: "i-services.{{ internal_domain }}"
+    value: "i-{{ item.id }}.{{ internal_domain }}"
     ttl: 300
     # Routing policy
     identifier: "{{ item.name }}"
@@ -37,9 +37,9 @@
   become: False
   route53:
     command: create
-    zone: "{{ domain }}"
+    zone: "{{ internal_domain }}"
     type: CNAME
     overwrite: yes
-    record: "i-docker.{{ domain }}"
-    value: "i-services.{{ domain }}"
+    record: "{{ registry_server }}"
+    value: "i-services.{{ internal_domain }}"
     ttl: 300

@@ -3,13 +3,13 @@ storage:
   s3:
     accesskey: {{ aws_access_key_id }}
     secretkey: {{ aws_secret_access_key }}
-    region: us-west-2
-    bucket: inme-registry
+    region: {{ aws_bucket_region }}
+    bucket: {{ aws_bucket_name }}
     encrypt: false
     secure: false
     v4auth: true
     chunksize: 5242880
-    rootdirectory: /v2
+    rootdirectory: /
   delete:
     enabled: true
   cache:
