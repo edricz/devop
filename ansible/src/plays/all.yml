@@ -47,23 +47,27 @@
     - { role: registry, tags: ['registry'] }
   serial: 1
 
-- name: Launch Etcd cluster membership service
+- name: Launch etcd cluster membership service
   hosts: tag_env_ops
   become: True
   roles:
     - { role: etcd,
-        etcd_discovery_url: "https://discovery.etcd.io/dd790ff2d13a3d8af4e8cd601c1b4383",
+        etcd_discovery_url: "https://discovery.etcd.io/3f680108254449b35af358500d9ebe48",
+        tags: ['etcd'],
+        when: "ec2_region == 'us-west-2'" }
+    - { role: etcd,
+        etcd_discovery_url: "https://discovery.etcd.io/0891cf9e69e74f6ccaa4e2cc1a24a895",
         tags: ['etcd'],
         when: "ec2_region == 'us-west-1'" }
 
-- name: Launch service registry and load balancer
+- name: Launch haproxy load balancer
   hosts: tag_env_ops
   become: True
   roles:
     - { role: etcd-register, tags: ['etcd'] }
     - { role: confd-haproxy, tags: ['loadbalancer'] }
 
-- name: Launch load balancer service
+- name: Configure DNS load balancing service
   hosts: tag_env_ops
   roles:
     - { role: loadbalancer, tags: ['loadbalancer'] }
@@ -76,7 +80,7 @@
   tasks:
     - { include: ../roles/loadbalancer/tasks/update_route53.yml, tags: ['loadbalancer'] }
 
-# - hosts: tag_jenkins_master
-#   become: True
-#   roles:
-#     - { role: jenkins, tags: ['jenkins'] }
+- hosts: tag_jenkins_master
+  become: True
+  roles:
+    - { role: jenkins, tags: ['jenkins'] }

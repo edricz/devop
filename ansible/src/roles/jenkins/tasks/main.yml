@@ -21,8 +21,9 @@
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/bin/docker
     env:
-      AWS_ACCESS_KEY_ID: "{{ aws_access_key_id }}"
-      AWS_SECRET_ACCESS_KEY: "{{ aws_secret_access_key }}"
-      FS_PATH: "{{ s3_bucket }}"
+      EXTERNAL_ROLE: "jenkins"
+      AWS_ACCESS_KEY_ID: "{{ aws_ops_access_key_id }}"
+      AWS_SECRET_ACCESS_KEY: "{{ aws_ops_secret_access_key }}"
+      FS_PATH: "{{ aws_ops_bucket_name }}"
       FS_LABEL: jenkins
       FS_PASSPHRASE: "{{ fs_passphrase }}"

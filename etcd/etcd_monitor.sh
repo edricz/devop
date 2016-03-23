@@ -42,7 +42,7 @@ while [ true ]; do
         fi
     done
     if [ $bad_iters -ge $iters ]; then
-        curl -XPOST $ALERT_URL -d '{ "text": "'"ETCD cluster in ${ALERT_REGION} has only $live_servers members"'" }'
+        curl -XPOST $ALERT_URL -d '{ "text": "'"ETCD cluster in ${EC2_REGION} has only $live_servers members"'" }'
         live_hist=()
     fi
 

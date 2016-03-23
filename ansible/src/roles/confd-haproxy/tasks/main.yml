@@ -25,8 +25,8 @@
 - name: Install custom nginx binary
   command: mv /usr/sbin/nginx.custom /usr/sbin/nginx
   notify:
-    - Test Nginx Config
-    - Restart Nginx
+    - Test nginx config
+    - Restart nginx
   when: nginx_stat['stat']['md5'] != nginx_custom_stat['stat']['md5']
 
 - name: Create nginx cache dir
@@ -45,8 +45,8 @@
     group: 'root'
     mode: '0644'
   notify:
-    - Test Nginx Config
-    - Reload Nginx
+    - Test nginx config
+    - Restart nginx
 
 - name: Create nginx loadbalancer config dir
   file:
@@ -64,8 +64,8 @@
     group: 'root'
     mode: '0644'
   notify:
-    - Test Nginx Config
-    - Reload Nginx
+    - Test nginx config
+    - Restart nginx
 
 - name: Add nginx tcp services config
   template:
@@ -75,8 +75,8 @@
     group: 'root'
     mode: '0644'
   notify:
-    - Test Nginx Config
-    - Reload Nginx
+    - Test nginx config
+    - Restart nginx
 
 - name: Add HtAuth user
   htpasswd:
@@ -111,7 +111,7 @@
     group: 'root'
     mode: '0644'
 
-- name: Start Nginx service
+- name: Start nginx service
   service: name=nginx state=started
 
 - name: Start confd-haproxy container

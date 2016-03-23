@@ -1,15 +1,15 @@
 version: 0.1
 storage:
   s3:
-    accesskey: {{ aws_access_key_id }}
-    secretkey: {{ aws_secret_access_key }}
-    region: {{ aws_bucket_region }}
-    bucket: {{ aws_bucket_name }}
+    accesskey: {{ aws_ops_access_key_id }}
+    secretkey: {{ aws_ops_secret_access_key }}
+    region: {{ aws_ops_bucket_region }}
+    bucket: {{ aws_ops_bucket_name }}
     encrypt: false
     secure: false
     v4auth: true
     chunksize: 5242880
-    rootdirectory: /
+    rootdirectory: /registry
   delete:
     enabled: true
   cache:

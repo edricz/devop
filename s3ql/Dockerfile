@@ -29,7 +29,7 @@ RUN curl -ksSL -o sqlite.tgz http://www.sqlite.org/2016/sqlite-autoconf-$SQLITE_
     && ldconfig
 
 # Install s3ql dependencies
-RUN apt-get install -qq -y --no-install-recommends \
+RUN apt-get update && apt-get install -qq -y --no-install-recommends \
         pkg-config libfuse-dev attr-dev psmisc procps cron
 RUN pip3 install setuptools defusedxml dugong requests pycrypto llfuse apsw
 

@@ -4,17 +4,17 @@
   ec2_vpc:
     state: present
     cidr_block: 10.0.0.0/16
-    resource_tags: { "env":"dev" }
+    resource_tags: { "env":"ops" }
     subnets:
       - cidr: 10.0.0.0/24
         az: us-west-2a
-        resource_tags: { "env":"dev" }
+        resource_tags: { "env":"ops" }
       - cidr: 10.0.1.0/24
         az: us-west-2b
-        resource_tags: { "env":"dev" }
+        resource_tags: { "env":"ops" }
       - cidr: 10.0.2.0/24
         az: us-west-2c
-        resource_tags: { "env":"dev" }
+        resource_tags: { "env":"ops" }
     internet_gateway: True
     route_tables:
       - subnets:

@@ -13,7 +13,7 @@
 # permission is obtained from Brickly.Io Incorporated.
 #
 
-FROM i-docker.brickly.io/base:latest
+FROM i-docker.brickly.io/python2:latest
 
 ENV VERSION v2.3.0
 ENV URL https://github.com/coreos/etcd/releases/download/$VERSION/etcd-$VERSION-linux-amd64.tar.gz
@@ -23,8 +23,11 @@ RUN curl -L $URL -o /tmp/etcd.tar.gz && \
     mv -v etcd-*/etcd /usr/local/bin/ && \
     mv -v etcd-*/etcdctl /usr/local/bin/
 
+ADD requirements.pip /
+RUN pip install -r requirements.pip
+
 VOLUME /app/data
-ADD etcd.sh /bin/etcd.sh
+ADD etcd_proc.py /bin/etcd_proc.py
 ADD etcd_monitor.sh /bin/etcd_monitor.sh
 
-ENTRYPOINT ["/bin/etcd.sh"]
+ENTRYPOINT ["/usr/bin/python", "/bin/etcd_proc.py"]
