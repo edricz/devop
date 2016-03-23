@@ -41,7 +41,7 @@
       when: bootstrapped.stat.exists == false
 
 - name: Launch Docker registry service
-  hosts: tag_env_ops
+  hosts: tag_registry_yes
   become: True
   roles:
     - { role: registry, tags: ['registry'] }
@@ -51,24 +51,17 @@
   hosts: tag_env_ops
   become: True
   roles:
-    - { role: etcd,
-        etcd_discovery_url: "https://discovery.etcd.io/3f680108254449b35af358500d9ebe48",
-        tags: ['etcd'],
-        when: "ec2_region == 'us-west-2'" }
-    - { role: etcd,
-        etcd_discovery_url: "https://discovery.etcd.io/0891cf9e69e74f6ccaa4e2cc1a24a895",
-        tags: ['etcd'],
-        when: "ec2_region == 'us-west-1'" }
+    - { role: etcd, tags: ['etcd'] }
+    - { role: etcd-register, tags: ['etcd'] }
 
 - name: Launch haproxy load balancer
-  hosts: tag_env_ops
+  hosts: tag_lb_yes
   become: True
   roles:
-    - { role: etcd-register, tags: ['etcd'] }
     - { role: confd-haproxy, tags: ['loadbalancer'] }
 
 - name: Configure DNS load balancing service
-  hosts: tag_env_ops
+  hosts: tag_lb_yes
   roles:
     - { role: loadbalancer, tags: ['loadbalancer'] }
   serial: 1

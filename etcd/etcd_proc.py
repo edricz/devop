@@ -40,7 +40,6 @@ class DnsCtl:
 
     def verify_record(self):
         dns_record = self.get_record()
-        print("verify dns record %s" % dns_record)
         if dns_record:
             for member in dns_record['members']:
                 ip, ttl, _ = member.split(':')
@@ -49,7 +48,6 @@ class DnsCtl:
         return None
 
     def write_record(self, dns_record):
-        print("writing dns record %s" % dns_record)
         txt = json.dumps(dns_record)
         change_set = boto.route53.record.ResourceRecordSets(self.conn, self.zone.id)
         change = change_set.add_change('UPSERT', '_' + self.REGION + '.' + self.DOMAIN, type="TXT", ttl=30)
@@ -198,13 +196,12 @@ class EtcdCtl:
             os.unsetenv('ETCD_INITIAL_CLUSTER_STATE')
             os.environ['ETCD_PROXY'] = 'on'
 
-        print("Starting etcd process in %s mode - %s" % (cluster_state, cluster_list))
+        logging.info("Starting etcd process in %s mode - %s" % (cluster_state, cluster_list))
         self.etcd_proc = subprocess.Popen('/usr/local/bin/etcd')
         self.current_cluster_list = cluster_list
         self.current_cluster_state = cluster_state
 
     def check_proc(self, etcd_record):
-        print("check proc - %s" % etcd_record)
         if not self.ip in etcd_record['members']:
             cluster_state = 'proxy'
         elif etcd_record['leader']:
@@ -212,12 +209,12 @@ class EtcdCtl:
         elif len(etcd_record['members']) >= self.MIN_MEMBERS:
             cluster_state = 'bootstrap'
         else:
-            print("ERROR: not enough members in ETCD cluster - %s" % etcd_record['members'])
+            logging.error("not enough members in ETCD cluster - %s" % etcd_record['members'])
             return None
 
-        if (sorted(etcd_record['members']) != self.current_cluster_list or
-            cluster_state != self.current_cluster_state or
-            self.etcd_proc is None or not self.etcd_proc.poll() is None):
+        if sorted(etcd_record['members']) != self.current_cluster_list or \
+           cluster_state != self.current_cluster_state or \
+           self.etcd_proc is None or not self.etcd_proc.poll() is None:
             self.stop_proc()
             self.start_proc(sorted(etcd_record['members']), cluster_state)
 
@@ -227,14 +224,11 @@ def run(dns_ctl, etcd_ctl, interval):
     dns_record = dns_ctl.get_record()
     if not dns_record:
         dns_record = dns_ctl.init_record()
-
-    print("DNS Record: %s" % dns_record)
+    logging.info('DNS Record - %s' % dns_record)
 
     etcd_record = etcd_ctl.get_record(dns_ctl.get_leader_ip(dns_record))
-    print("ETCD Record: %s" % etcd_record)
 
     dns_record = dns_ctl.set_record(dns_record, etcd_record['leader'])
-    print("DNS Record 2: %s" % dns_record)
     if not dns_record:
         # DNS update failed, try again
         time.sleep(1)
@@ -251,16 +245,13 @@ if __name__ == "__main__":
 
     DNS_CTL = DnsCtl(SELF_IP)
     ETCD_CTL = EtcdCtl(SELF_IP)
-    print("starting etcd monitor")
     ETCD_MONITOR = subprocess.Popen(['/bin/etcd_monitor.sh'])
 
     while True:
 
-        print("checking etcd monitor")
         if ETCD_MONITOR.poll() is not None:
-            print("FATAL: etcd monitor script died")
+            logging.critical("etcd monitor script died")
             sys.exit(1)
 
-        print("running etcd checker")
         run(DNS_CTL, ETCD_CTL, CHECK_INTERVAL)
 	sys.stdout.flush()
