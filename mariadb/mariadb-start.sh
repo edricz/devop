@@ -62,9 +62,8 @@ if [ -z ${peers} ]; then
     exec /usr/bin/mysqld_safe --port ${HOST_PORT} \
          --wsrep_node_address="$(get_node_addr)" \
          --wsrep_node_incoming_address="$(get_node_addr)" \
-         --wsrep_new_cluster \
+         --wsrep_new_cluster --wsrep_cluster_address="gcomm://" \
          --log-error=/var/lib/mysql/mysql.error.log
-     # --wsrep_cluster_address="gcomm://" \
 else
   # cluster joiner node
     exec /usr/bin/mysqld_safe --port ${HOST_PORT} \
