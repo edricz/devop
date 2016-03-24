@@ -93,15 +93,15 @@ backend external_mariadb
     {{ end }}
 {{ end }}
 
-{{ if exists "/services/internal_mariadb" }}
-frontend internal_mariadb
+{{ if exists "/services/db_internal" }}
+frontend db_internal
     mode tcp
     bind 0.0.0.0:7151
-    default_backend internal_mariadb
-backend internal_mariadb
+    default_backend db_internal
+backend db_internal
     option mysql-check user haproxy post-41
     mode tcp
-    {{ range gets "/backends/internal_mariadb/*" }}
+    {{ range gets "/backends/db_internal/*" }}
     {{ $data := .Value }}
     server {{ $data }}_container {{ $data }} check inter 2s rise 2 fall 2 
     {{ end }}
