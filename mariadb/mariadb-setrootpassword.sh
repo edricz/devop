@@ -23,6 +23,7 @@ while [ "$port_open" -eq 0 ]; do
 done
 
 # Secure the installation
+sleep 600
 done=0
 count=0
 maxtries=10
