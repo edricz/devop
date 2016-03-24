@@ -6,7 +6,7 @@ MSA=/usr/bin/mysqladmin
 
 # make sure ownership of data dir is OK
 chown -R mysql:mysql /var/lib/mysql
-/usr/bin/mysqld_safe &
+/usr/bin/mysqld_safe --port ${HOST_PORT} &
 
 sleep 5 # wait for mysqld_safe to rev up, and check for port availability
 port_open=0
@@ -23,7 +23,6 @@ while [ "$port_open" -eq 0 ]; do
 done
 
 # Secure the installation
-sleep 600
 done=0
 count=0
 maxtries=10
