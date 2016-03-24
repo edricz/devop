@@ -77,3 +77,9 @@
   become: True
   roles:
     - { role: jenkins, tags: ['jenkins'] }
+
+- hosts: tag_mariadb_yes
+  become: True
+  roles:
+    - { role: mariadb, tags: ['mariadb'] }
+  serial: 1

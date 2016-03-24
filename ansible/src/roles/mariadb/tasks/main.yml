@@ -1,0 +1,37 @@
+---
+
+- name: Assure certificate dir exists
+  file: path="{{ volume }}/{{ name }}/ssl/root" state=directory
+
+- name: Copy over SSL certificates
+  copy:
+    content: "{{ item.value }}"
+    dest: "{{ volume }}/{{ name }}/ssl/{{ item.name }}.pem"
+    owner: 999
+    group: 999
+    mode: 0400
+  with_items: "{{ certs }}"
+
+- name: Launch MariaDB container
+  docker:
+    name: "{{ name }}"
+    restart_policy: on-failure
+    restart_policy_retry: 5
+    image: "{{ registry_server }}/mariadb:latest"
+    state: reloaded
+    pull: always
+    net: host
+    volumes:
+      - "{{ volume }}/{{ name }}/sql:/var/lib/mysql"
+      - "{{ volume }}/{{ name }}/ssl:/etc/ssl/mysql"
+    env:
+      HOST_PORT: "{{ port }}"
+      BACKEND_SERVICE: "{{ name }}"
+
+- name: Wait For Cluster Element To Come Up
+  wait_for:
+    host: "{{ hostvars[inventory_hostname]['ec2_private_ip_address'] }}"
+    port: "{{ port }}"
+    delay: 5
+    timeout: 300
+    state: started
