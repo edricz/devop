@@ -45,3 +45,5 @@ RUN chmod a+x /usr/bin/mariadb-start /usr/bin/mariadb-setrootpassword
 expose	3306 4567 4444
 
 VOLUME /var/lib/mysql
+
+ENTRYPOINT ["/usr/bin/mariadb-start"]
