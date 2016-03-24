@@ -32,7 +32,7 @@
     region: "{{ item.name }}"
   with_items: "{{ regions }}"
 
-- name: Create Route53 i-docker DNS entry
+- name: Create Route53 DNS entry for Docker registry server
   delegate_to: 127.0.0.1
   become: False
   route53:
@@ -43,3 +43,17 @@
     record: "{{ registry_server }}"
     value: "i-services.{{ internal_domain }}"
     ttl: 300
+
+- name: Create Route53 DNS entries for external services
+  delegate_to: 127.0.0.1
+  become: False
+  route53:
+    command: create
+    zone: "{{ internal_domain }}"
+    type: CNAME
+    overwrite: yes
+    record: "{{ item }}.{{ internal_domain }}"
+    value: "services.{{ internal_domain }}"
+    ttl: 300
+  with_items:
+    - "jenkins"

@@ -14,14 +14,15 @@
 #
 
 FROM i-docker.brickly.io/python2:latest
+ENV version=1
 
-ENV VERSION v2.3.0
-ENV URL https://github.com/coreos/etcd/releases/download/$VERSION/etcd-$VERSION-linux-amd64.tar.gz
+ENV ETCD_VERSION=v2.3.0
+ENV URL https://github.com/coreos/etcd/releases/download/$ETCD_VERSION/etcd-$ETCD_VERSION-linux-amd64.tar.gz
 
-RUN curl -L $URL -o /tmp/etcd.tar.gz && \
-    cd /tmp && tar zxf etcd.tar.gz && \
-    mv -v etcd-*/etcd /usr/local/bin/ && \
-    mv -v etcd-*/etcdctl /usr/local/bin/
+RUN curl -L $URL -o /tmp/etcd.tar.gz \
+    && cd /tmp && tar zxf etcd.tar.gz \
+    && mv -v etcd-*/etcd /usr/local/bin/ \
+    && mv -v etcd-*/etcdctl /usr/local/bin/
 
 ADD requirements.pip /
 RUN pip install -r requirements.pip

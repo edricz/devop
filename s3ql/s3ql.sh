@@ -90,7 +90,7 @@ elif [ "$action" = "fsck" ] ; then
 elif [ "$action" = "mount" ] ; then
     prep $*
     ulimit -n 100000
-    printf "continue\n" | fsck.s3ql --cachedir ${CACHE_DIR} --authfile ${auth_file} --backend-options no-ssl --log ${log_file} ${s3_path} || true
+    printf "continue, I know what I am doing\n" | fsck.s3ql --cachedir ${CACHE_DIR} --authfile ${auth_file} --backend-options no-ssl --log ${log_file} ${s3_path} || true
     mount.s3ql --allow-other --cachedir ${CACHE_DIR} --authfile ${auth_file} --backend-options no-ssl --log ${log_file} --cachesize ${FS_CACHE_SIZE} ${s3_path} ${MOUNT_DIR}
 
     # remove any fsck recovered file since they will not be restored

@@ -14,6 +14,7 @@
 #
 
 FROM debian:jessie
+ENV version=1
 
 # enable non-interactive mode for apt-get
 ENV DEBIAN_FRONTEND=noninteractive
@@ -23,9 +24,9 @@ ENV TERM=xterm
 RUN echo "Acquire::http {No-Cache=True;};" > /etc/apt/apt.conf.d/no-cache
 
 # install base packages
-RUN apt-get update -yqq && \
-    apt-get -yqq dist-upgrade && \
-    apt-get -yqq --force-yes install \
+RUN apt-get update -yqq \
+    && apt-get -yqq dist-upgrade \
+    && apt-get -yqq --force-yes install \
       curl wget git-core vim locales apt-transport-https
 
 # add self-signed certificate

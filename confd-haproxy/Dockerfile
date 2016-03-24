@@ -14,6 +14,7 @@
 #
 
 FROM i-docker.brickly.io/base:latest
+ENV version=1
 
 ENV CONFD_VERSION 0.11.0
 ENV CONFD_URL https://github.com/kelseyhightower/confd/releases/download/v$CONFD_VERSION/confd-$CONFD_VERSION-linux-amd64

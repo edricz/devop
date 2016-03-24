@@ -14,6 +14,7 @@
 #
 
 FROM i-docker.brickly.io/base:latest
+ENV version=1
 
 ENV REDIS_VERSION 3.0.7
 ENV REDIS_DOWNLOAD_URL http://download.redis.io/releases/redis-$REDIS_VERSION.tar.gz

@@ -19,9 +19,9 @@
     volumes:
       - /local/s3ql:/data/cache
       - /var/run/docker.sock:/var/run/docker.sock
-      - /usr/bin/docker:/bin/docker
     env:
       EXTERNAL_ROLE: "jenkins"
+      HOST_PORT: "8080"
       AWS_ACCESS_KEY_ID: "{{ aws_ops_access_key_id }}"
       AWS_SECRET_ACCESS_KEY: "{{ aws_ops_secret_access_key }}"
       FS_PATH: "{{ aws_ops_bucket_name }}"

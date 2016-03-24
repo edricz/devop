@@ -14,6 +14,7 @@
 #
 
 FROM i-docker.brickly.io/base:latest
+ENV version=1
 
 RUN apt-get install -yqq --force-yes --no-install-recommends \
       curl build-essential zlib1g-dev libbz2-dev liblzma-dev libssl-dev ca-certificates

@@ -14,6 +14,7 @@
 #
 
 FROM i-docker.brickly.io/python3:latest
+ENV version=1
 
 # Download and install sqlite
 ENV SQLITE_VERSION 3110100

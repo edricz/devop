@@ -14,6 +14,7 @@
 #
 
 FROM i-docker.brickly.io/s3ql:latest
+ENV version=1
 
 # Install Java 8
 ENV JAVA_VERSION=8 JAVA_UPDATE=66 JAVA_BUILD=17 JAVA_HOME=/usr/local/lib/java
@@ -55,13 +56,11 @@ RUN curl -fL https://github.com/krallin/tini/releases/download/v0.5.0/tini-stati
 
 COPY init.groovy /usr/share/jenkins/ref/init.groovy.d/tcp-slave-agent-port.groovy
 
-ENV JENKINS_VERSION 1.625.2
-ENV JENKINS_SHA 395fe6975cf75d93d9fafdafe96d9aab1996233b
+ENV JENKINS_VERSION 1.642.3
 
 # could use ADD but this one does not check Last-Modified header 
 # see https://github.com/docker/docker/issues/8331
-RUN curl -fL http://mirrors.jenkins-ci.org/war-stable/$JENKINS_VERSION/jenkins.war -o /usr/share/jenkins/jenkins.war \
-  && echo "$JENKINS_SHA /usr/share/jenkins/jenkins.war" | sha1sum -c -
+RUN curl -fL http://mirrors.jenkins-ci.org/war-stable/$JENKINS_VERSION/jenkins.war -o /usr/share/jenkins/jenkins.war
 
 ENV JENKINS_UC https://updates.jenkins-ci.org
 RUN chown -R jenkins "$JENKINS_HOME" /usr/share/jenkins/ref
@@ -75,8 +74,13 @@ EXPOSE 50000
 ENV COPY_REFERENCE_FILE_LOG $JENKINS_HOME/copy_reference_file.log
 
 # Install extra packages
-RUN apt-get install -yqq unzip sudo
+RUN apt-get update && apt-get install -yqq unzip sudo
 RUN echo "jenkins ALL=NOPASSWD: ALL" >> /etc/sudoers
+
+# Install Docker
+ENV DOCKER_VERSION 1.10.3
+RUN curl -fSL "https://get.docker.com/builds/Linux/x86_64/docker-$DOCKER_VERSION" -o /usr/local/bin/docker \
+    && chmod +x /usr/local/bin/docker
 
 USER jenkins
 

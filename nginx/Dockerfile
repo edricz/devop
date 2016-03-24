@@ -14,9 +14,10 @@
 #
 
 FROM i-docker.brickly.io/base:latest
+ENV version=1
 
 ENV NGINX_VERSION 1.9.12
-ENV SRC_DIR  /usr/local/src
+ENV SRC_DIR /usr/local/src
 
 #install build packages and module deps
 RUN apt-get -qq update && \

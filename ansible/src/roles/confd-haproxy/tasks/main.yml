@@ -48,6 +48,36 @@
     - Test nginx config
     - Restart nginx
 
+- name: Create SSL key files for external domain
+  template:
+    src: 'external_domain/{{ item }}'
+    dest: '/etc/nginx/{{ external_domain }}.{{ item }}'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  with_items:
+    - "ssl.crt"
+    - "ssl.tcr"
+    - "ssl.key"
+  notify:
+    - Test nginx config
+    - Restart nginx
+
+- name: Create SSL key files for internal domain
+  template:
+    src: 'internal_domain/{{ item }}'
+    dest: '/etc/nginx/{{ internal_domain }}.{{ item }}'
+    owner: 'root'
+    group: 'root'
+    mode: '0644'
+  with_items:
+    - "ssl.crt"
+    - "ssl.tcr"
+    - "ssl.key"
+  notify:
+    - Test nginx config
+    - Restart nginx
+
 - name: Create nginx loadbalancer config dir
   file:
     path: /etc/nginx/conf.d/lb

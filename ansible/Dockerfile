@@ -14,6 +14,7 @@
 #
 
 FROM i-docker.brickly.io/python2:latest
+ENV version=1
 
 ENV ANSIBLE_URL=https://github.com/ansible/ansible.git
 ENV ANSIBLE_BRANCH=v2.0.0.1-1
