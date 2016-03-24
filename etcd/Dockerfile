@@ -16,8 +16,8 @@
 FROM i-docker.brickly.io/python2:latest
 ENV version=1
 
-ENV ETCD_VERSION=v2.3.0
-ENV URL https://github.com/coreos/etcd/releases/download/$ETCD_VERSION/etcd-$ETCD_VERSION-linux-amd64.tar.gz
+ENV APP_VERSION=v2.3.0  # warning: do not use ETCD_XXX prefixed env vars
+ENV URL https://github.com/coreos/etcd/releases/download/$APP_VERSION/etcd-$APP_VERSION-linux-amd64.tar.gz
 
 RUN curl -L $URL -o /tmp/etcd.tar.gz \
     && cd /tmp && tar zxf etcd.tar.gz \
