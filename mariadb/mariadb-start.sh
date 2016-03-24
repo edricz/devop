@@ -15,9 +15,9 @@ get_node_addr() {
 
 ln -sf /var/lib/mysql/mysql.sock /var/run/mysqld/mysqld.sock
 
-sed -i 's|^port.*=.*$|port = ${HOST_PORT}|' /etc/mysql/my-init.cnf
+sed -i "s|^port.*=.*$|port = ${HOST_PORT}|" /etc/mysql/my-init.cnf
 ln -sf /etc/mysql/my-init.cnf /etc/mysql/my.cnf
-sleep 600
+
 if [ ! -e /var/lib/mysql/bootstrapped ] && [ ! -e /var/lib/mysql/xtrabackup_info ]; then
     status "Bootstrapping MariaDB installation..."
 
@@ -31,7 +31,7 @@ else
     status "Starting from already-bootstrapped MariaDB installation"
 fi
 
-sed -i 's|^port.*=.*$|port = ${HOST_PORT}|' /etc/mysql/my-cluster.cnf
+sed -i "s|^port.*=.*$|port = ${HOST_PORT}|" /etc/mysql/my-cluster.cnf
 ln -sf /etc/mysql/my-cluster.cnf /etc/mysql/my.cnf
 
 sed -i 's|encrypt=$(parse_cnf sst encrypt 0)|encrypt=0|' /usr/bin/wsrep_sst_xtrabackup-v2
