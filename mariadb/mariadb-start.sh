@@ -42,10 +42,9 @@ if [ ! -z ${CLUSTER_PEERS+x} ]; then
 else
     peers=""
     status "This node: $(get_node_addr)"
-    sleep 600
 
-    for backend in $(etcdctl ls --recursive /backends/mariadb/latest/);do
-	peer=$(etcdctl get ${backend} | sed 's/:3306//g;s/\ //g')
+    for backend in $(etcdctl ls --recursive /backends/${BACKEND_SERVICE}/); do
+	peer=$(etcdctl get ${backend} | sed 's|:.*$||g')
 	[ "$peer" != "$(get_node_addr)" ] && {
 	    peers="${peers},${peer}"
 	}
