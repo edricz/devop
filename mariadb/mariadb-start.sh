@@ -17,7 +17,7 @@ ln -sf /var/lib/mysql/mysql.sock /var/run/mysqld/mysqld.sock
 
 sed -i 's|^port.*=.*$|port = ${HOST_PORT}|' /etc/mysql/my-init.cnf
 ln -sf /etc/mysql/my-init.cnf /etc/mysql/my.cnf
-
+sleep 600
 if [ ! -e /var/lib/mysql/bootstrapped ] && [ ! -e /var/lib/mysql/xtrabackup_info ]; then
     status "Bootstrapping MariaDB installation..."
 
