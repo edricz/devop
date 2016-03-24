@@ -8,16 +8,16 @@ MSA=/usr/bin/mysqladmin
 chown -R mysql:mysql /var/lib/mysql
 /usr/bin/mysqld_safe &
 
-sleep 5 # wait for mysqld_safe to rev up, and check for port 3306
+sleep 5 # wait for mysqld_safe to rev up, and check for port availability
 port_open=0
 
 while [ "$port_open" -eq 0 ]; do
-   /bin/nc -z -w 5 127.0.0.1 3306
+   /bin/nc -z -w 5 127.0.0.1 ${HOST_PORT}
    if [ $? -ne 0 ]; then
-       echo "Sleeping waiting for port 3306 to open: result " $? 
+       echo "Sleeping waiting for port ${HOST_PORT} to open: result " $? 
        sleep 1
    else
-       echo "Port 3306 is open"
+       echo "Port ${HOST_PORT} is open"
        port_open=1
    fi
 done

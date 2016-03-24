@@ -14,6 +14,8 @@ get_node_addr() {
 }
 
 ln -sf /var/lib/mysql/mysql.sock /var/run/mysqld/mysqld.sock
+
+sed -i 's|^port.*=.*$|port = ${HOST_PORT}|' /etc/mysql/my-init.cnf
 ln -sf /etc/mysql/my-init.cnf /etc/mysql/my.cnf
 
 if [ ! -e /var/lib/mysql/bootstrapped ] && [ ! -e /var/lib/mysql/xtrabackup_info ]; then
@@ -29,6 +31,7 @@ else
     status "Starting from already-bootstrapped MariaDB installation"
 fi
 
+sed -i 's|^port.*=.*$|port = ${HOST_PORT}|' /etc/mysql/my-cluster.cnf
 ln -sf /etc/mysql/my-cluster.cnf /etc/mysql/my.cnf
 
 sed -i 's|encrypt=$(parse_cnf sst encrypt 0)|encrypt=0|' /usr/bin/wsrep_sst_xtrabackup-v2
@@ -38,18 +41,14 @@ if [ ! -z ${CLUSTER_PEERS+x} ]; then
     status "Using cluster peers defined in env: $CLUSTER_PEERS"
 else
     peers=""
-    for region in $ETCD_REGIONS;do
-	this_peer="$(dig $region +short):4001"
-	status "This node: $(get_node_addr)"
-	status "Polling ${this_peer} for backends"
+    status "This node: $(get_node_addr)"
+    sleep 600
 
-	export ETCDCTL_PEERS=${this_peer}
-	for backend in $(etcdctl ls --recursive /backends/mariadb/latest/);do
-	    peer=$(etcdctl get ${backend} | sed 's/:3306//g;s/\ //g')
-	    [ "$peer" != "$(get_node_addr)" ] && {
-		peers="${peers},${peer}"
-	    }
-	done
+    for backend in $(etcdctl ls --recursive /backends/mariadb/latest/);do
+	peer=$(etcdctl get ${backend} | sed 's/:3306//g;s/\ //g')
+	[ "$peer" != "$(get_node_addr)" ] && {
+	    peers="${peers},${peer}"
+	}
     done
 
     #format peers list
