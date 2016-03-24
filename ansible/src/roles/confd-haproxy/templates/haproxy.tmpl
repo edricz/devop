@@ -79,7 +79,7 @@ backend registry
     {{ end }}
 {{ end }}
 
-{{ if exists "/services/external_mariadb" }}
+{{ if exists "/services/db-external" }}
 frontend external_mariadb
     mode tcp
     bind 0.0.0.0:7150
@@ -87,13 +87,13 @@ frontend external_mariadb
 backend external_mariadb
     option mysql-check user haproxy post-41
     mode tcp
-    {{ range gets "/backends/external_mariadb/*" }}
+    {{ range gets "/backends/db-external/*" }}
     {{ $data := .Value }}
     server {{ $data }}_container {{ $data }} check inter 2s rise 2 fall 2 
     {{ end }}
 {{ end }}
 
-{{ if exists "/services/db_internal" }}
+{{ if exists "/services/db-internal" }}
 frontend db_internal
     mode tcp
     bind 0.0.0.0:7151
@@ -101,7 +101,7 @@ frontend db_internal
 backend db_internal
     option mysql-check user haproxy post-41
     mode tcp
-    {{ range gets "/backends/db_internal/*" }}
+    {{ range gets "/backends/db-internal/*" }}
     {{ $data := .Value }}
     server {{ $data }}_container {{ $data }} check inter 2s rise 2 fall 2 
     {{ end }}

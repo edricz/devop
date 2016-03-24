@@ -68,6 +68,8 @@ CUSER="CREATE USER 'mysql'@'localhost'"
 echo "$CUSER" | mysql -u root --password="$ROOT_PASSWORD" mysql
 GRANT="GRANT RELOAD, LOCK TABLES, REPLICATION CLIENT ON *.* TO 'mysql'@'localhost'"
 echo "$GRANT" | mysql -u root --password="$ROOT_PASSWORD" mysql
+CUSER="CREATE USER 'haproxy'@'%'"
+echo "$CUSER" | mysql -u root --password="$ROOT_PASSWORD" mysql
 
 # now set the root passwords given the certificates available
 ROOTCERTS=/etc/ssl/mysql/root
