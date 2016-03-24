@@ -26,10 +26,10 @@ RUN rm -rf /var/lib/apt/lists/* \
     && apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xcbcb082a1bb943db \
     && echo "deb http://sfo1.mirrors.digitalocean.com/mariadb/repo/${MARIADB_VERSION}/debian jessie main" >> /etc/apt/sources.list \
     && echo "deb http://sfo1.mirrors.digitalocean.com/mariadb/repo/${MARIADB_VERSION}/debian sid main" >> /etc/apt/sources.list \
-    && echo "deb http://httpredir.debian.org/debian testing main contrib non-free" >> /etc/apt/sources.list \
     && apt-get -yqq clean \
     && apt-get -yqq update \
     && apt-get install -yf iproute galera-3 mariadb-galera-server-$MARIADB_VERSION rsync netcat-openbsd socat pv
+#    && echo "deb http://httpredir.debian.org/debian testing main contrib non-free" >> /etc/apt/sources.list \
 
 RUN apt-key adv --keyserver keys.gnupg.net --recv-keys 1C4CBDCDCD2EFD2A && \
     echo "deb http://repo.percona.com/apt jessie main" >> /etc/apt/sources.list && \
