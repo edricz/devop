@@ -27,7 +27,7 @@ RUN rm -rf /var/lib/apt/lists/* \
     && echo "deb http://sfo1.mirrors.digitalocean.com/mariadb/repo/${MARIADB_VERSION}/debian jessie main" >> /etc/apt/sources.list \
     && echo "deb http://sfo1.mirrors.digitalocean.com/mariadb/repo/${MARIADB_VERSION}/debian sid main" >> /etc/apt/sources.list \
     && echo "deb http://httpredir.debian.org/debian testing main contrib non-free" >> /etc/apt/sources.list \
-    && apt-get -yqq clean
+    && apt-get -yqq clean \
     && apt-get -yqq update \
     && apt-get install -yf iproute galera-3 mariadb-galera-server-$MARIADB_VERSION rsync netcat-openbsd socat pv
 
