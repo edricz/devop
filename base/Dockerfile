@@ -30,5 +30,6 @@ RUN apt-get update -yqq && \
 
 # add self-signed certificate
 # openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout private.key -out private.crt
+# todo: is this still needed?
 COPY internal.crt /usr/local/share/ca-certificates/
 RUN update-ca-certificates
