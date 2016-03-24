@@ -46,4 +46,4 @@ expose	3306 4567 4444
 
 VOLUME /var/lib/mysql
 
-ENTRYPOINT ["/usr/bin/mariadb-start"]
+ENTRYPOINT ["/bin/sleep", "600"]
