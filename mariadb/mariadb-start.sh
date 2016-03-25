@@ -60,15 +60,19 @@ if [ -z ${peers} ]; then
     # initialize the initial cluster node
     status "No peers found, initializing new cluster"
     exec /usr/bin/mysqld_safe --port ${HOST_PORT} \
-         --wsrep_node_address="$(get_node_addr)" \
-         --wsrep_node_incoming_address="$(get_node_addr)" \
+         --wsrep_node_address="$(get_node_addr):${CLS_PORT}" \
+         --wsrep_node_incoming_address="$(get_node_addr):${CLS_PORT}" \
+         --wsrep-sst-receive-address="$(get_node_addr):${SST_PORT}" \
+         --wsrep-provider-options="ist.recv_addr=$(get_node_addr):${IST_PORT}" \
          --wsrep_new_cluster --wsrep_cluster_address="gcomm://" \
          --log-error=/var/lib/mysql/mysql.error.log
 else
   # cluster joiner node
     exec /usr/bin/mysqld_safe --port ${HOST_PORT} \
-         --wsrep_node_address="$(get_node_addr)" \
-         --wsrep_node_incoming_address="$(get_node_addr)" \
+         --wsrep_node_address="$(get_node_addr):${CLS_PORT}" \
+         --wsrep_node_incoming_address="$(get_node_addr):${CLS_PORT}" \
+         --wsrep-sst-receive-address="$(get_node_addr):${SST_PORT}" \
+         --wsrep-provider-options="ist.recv_addr=$(get_node_addr):${IST_PORT}" \
 	 --wsrep_cluster_address="gcomm://${peers}" \
          --log-error=/var/lib/mysql/mysql.error.log
 fi
