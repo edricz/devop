@@ -1,12 +1,12 @@
 ---
 
 - name: Assure certificate dir exists
-  file: path="{{ volume }}/{{ name }}/ssl/root" state=directory
+  file: path="/data/ssl/root" state=directory
 
 - name: Copy over SSL certificates
   copy:
     content: "{{ item.value }}"
-    dest: "{{ volume }}/{{ name }}/ssl/{{ item.name }}.pem"
+    dest: "/data/ssl/{{ item.name }}.pem"
     owner: 999
     group: 999
     mode: 0400
@@ -14,7 +14,7 @@
 
 - name: Launch MariaDB container
   docker:
-    name: "{{ name }}"
+    name: "{{ item.name }}"
     restart_policy: on-failure
     restart_policy_retry: 5
     image: "{{ registry_server }}/mariadb:latest"
@@ -22,16 +22,21 @@
     pull: always
     net: host
     volumes:
-      - "{{ volume }}/{{ name }}/sql:/var/lib/mysql"
-      - "{{ volume }}/{{ name }}/ssl:/etc/ssl/mysql"
+      - "{{ item.volume }}/{{ item.name }}/sql:/var/lib/mysql"
+      - "/data/ssl:/etc/ssl/mysql:ro"
     env:
-      HOST_PORT: "{{ port }}"
-      BACKEND_SERVICE: "{{ name }}"
+      HOST_PORT: "{{ item.sql_port }}"
+      CLS_PORT:  "{{ item.cls_port }}"
+      IST_PORT:  "{{ item.ist_port }}"
+      SST_PORT:  "{{ item.sst_port }}"
+      BACKEND_SERVICE: "{{ item.name }}"
+  with_items: "{{ db_instances }}"
 
 - name: Wait For Cluster Element To Come Up
   wait_for:
     host: "{{ hostvars[inventory_hostname]['ec2_private_ip_address'] }}"
-    port: "{{ port }}"
+    port: "{{ item.sql_port }}"
     delay: 5
     timeout: 300
     state: started
+  with_items: "{{ db_instances }}"

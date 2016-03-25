@@ -57,3 +57,18 @@
     ttl: 300
   with_items:
     - "jenkins"
+    - "dev"
+
+- name: Create Route53 DNS entries for production services
+  delegate_to: 127.0.0.1
+  become: False
+  route53:
+    command: create
+    zone: "{{ external_domain }}"
+    type: CNAME
+    overwrite: yes
+    record: "{{ item }}.{{ external_domain }}"
+    value: "services.{{ external_domain }}"
+    ttl: 300
+  with_items:
+    - "www"
