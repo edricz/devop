@@ -1,0 +1,46 @@
+---
+
+- name: Creates Redis directory
+  file: path="/data/{{ item.name }}" state=directory mode=0777
+  with_items: "{{ www_services }}"
+
+- name: Deploy Redis cache container
+  docker:
+    name: "{{ item.name }}-redis"
+    restart_policy: on-failure
+    restart_policy_retry: 5
+    image: "{{ registry_server }}/redis:latest"
+    state: reloaded
+    pull: always
+    volumes:
+      - "/data/{{ item.name }}:/data"
+  with_items: "{{ www_services }}"
+
+- name: Deploy deejay 
+  docker:
+    name: "{{ item.name }}"
+    restart_policy: on-failure
+    restart_policy_retry: 5
+    image: "{{ registry_server }}/deejay:{{ item.tag }}"
+    state: reloaded
+    pull: always
+    command: python3 manage.py runserver 0.0.0.0:8000
+    expose:
+      - 8000
+    ports:
+      - 8000
+    links:
+      - "{{ item.name }}-redis:redis"
+    volumes:
+      - "/data:/data2"
+    env:
+      DOMAIN_NAME: "{{ item.tag }}.{{ item.domain }}"
+      BACKEND_SERVICE: "{{ item.name }}"
+      POD_1_DB_NAME: "{{ item.pod_1_db_name }}"
+      DB_NAME: "{{ item.db_name }}"
+      DB_USER: "{{ item.db_user }}"
+      DB_PASS: "{{ item.db_pass }}"
+      DB_PORT: "{{ item.db_port }}"
+      DB_HOST: "i-services.{{ internal_domain }}"
+  with_items: "{{ www_services }}"
+
