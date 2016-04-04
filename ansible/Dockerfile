@@ -19,14 +19,17 @@ ENV version=1
 ENV ANSIBLE_URL=https://github.com/ansible/ansible.git
 ENV ANSIBLE_BRANCH=v2.0.0.1-1
 
+# NOTE: ansible UID must match UID specified in roles/base/vars/main.yml
+ENV ANSIBLE_UID=2000
+
 COPY patch /patch
 #    mkdir -p ./lib/ansible/modules/core/cloud/amazon && \
 #    mv /patch/amazon/* ./lib/ansible/modules/core/cloud/amazon/ && \
 #    mv /patch/os/* ./lib/ansible/modules/core/packaging/os/ && \
 RUN git clone -b $ANSIBLE_BRANCH --recursive $ANSIBLE_URL /app && \
     cd /app && \
-    groupadd -g 1000 ansible && \
-    useradd -m ansible -u 1000 -g 1000 && \
+    groupadd -g $ANSIBLE_UID ansible && \
+    useradd -m ansible -u $ANSIBLE_UID -g $ANSIBLE_UID && \
     python setup.py install && \
     rm -rf /app
 RUN pip install -r /patch/requirements.txt

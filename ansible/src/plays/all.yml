@@ -76,6 +76,7 @@
 - hosts: tag_jenkins_master
   become: True
   roles:
+    - { role: ansible, tags: ['jenkins'] }
     - { role: jenkins, tags: ['jenkins'] }
 
 - hosts: tag_mariadb_yes
