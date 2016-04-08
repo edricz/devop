@@ -5,8 +5,8 @@
     - /etc/ansible/group_vars/all.yml
   tasks:
     - name: Create local ansible group
-      group: name=ansible state=present system=yes gid=1000
+      group: name=ansible state=present system=yes gid=2000
     - name: Create local ansible user
-      user: name=ansible state=present group=ansible uid=1000
+      user: name=ansible state=present group=ansible uid=2000
   roles:
     - ansible

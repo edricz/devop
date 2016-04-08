@@ -59,6 +59,7 @@
     - "jenkins"
     - "dev"
 
+# todo: add apex domain name as well (i.e. brickly.io)
 - name: Create Route53 DNS entries for production services
   delegate_to: 127.0.0.1
   become: False
