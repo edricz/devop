@@ -85,7 +85,7 @@
     - { role: mariadb, tags: ['mariadb'] }
   serial: 1
 
-- hosts: tag_zone_us_west_2b
+- hosts: tag_www_yes
   become: True
   roles:
     - { role: www, tags: ['www'] }
