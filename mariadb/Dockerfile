@@ -20,7 +20,7 @@ ENV version=3
 # regardless of whatever dependencies get added
 RUN groupadd -r mysql && useradd -r -g mysql mysql
 
-ENV MARIADB_VERSION 10.0
+ENV MARIADB_VERSION 10.1
 
 RUN rm -rf /var/lib/apt/lists/* \
     && echo "deb http://httpredir.debian.org/debian testing main contrib non-free" >> /etc/apt/sources.list \
