@@ -7,21 +7,16 @@ INITIAL_CLUSTER_SIZE=3
     exit 1
 }
 
-[ -z "$ETCD_HOST" ] && {
-    echo "env var ETCD_HOST must be set"
-    exit 1
-}
-
 function getpeers() {
     SEEDS=""
 
-    while [ $(etcdctl --peers $ETCD_HOST ls /backends/cassandra/latest/ | wc -l) -lt $INITIAL_CLUSTER_SIZE]; do
+    while [ $(etcdctl ls /backends/cassandra/latest/ | wc -l) -lt $INITIAL_CLUSTER_SIZE]; do
         echo "Waiting for initial cluster size of $INITIAL_CLUSTER_SIZE ... "
         sleep 2
     done
 
-    for i in $(etcdctl --peers $ETCD_HOST ls /backends/cassandra/latest/); do 
-        seed=$(etcdctl --peers $ETCD_HOST get $i; done | cut -f1 -d\: dt)
+    for i in $(etcdctl ls /backends/cassandra/latest/); do 
+        seed=$(etcdctl get $i; done | cut -f1 -d\: dt)
         SEEDS="${SEEDS},${seed}"
     done
 }

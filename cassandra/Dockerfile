@@ -16,11 +16,6 @@
 FROM i-docker.brickly.io/etcd:latest
 ENV version=2
 
-# Install CONFD
-ENV CONFD_VERSION 0.11.0
-ENV CONFD_URL https://github.com/kelseyhightower/confd/releases/download/v$CONFD_VERSION/confd-$CONFD_VERSION-linux-amd64
-RUN wget $CONFD_URL -O /usr/local/bin/confd && chmod +x /usr/local/bin/confd
-
 # Install JRE
 ENV APP_JAVA_VERSION=8 APP_JAVA_UPDATE=91 APP_JAVA_BUILD=14 JAVA_HOME=/usr/lib/java
 ENV PATH=$PATH:${JAVA_HOME}/bin
