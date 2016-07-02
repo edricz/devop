@@ -14,7 +14,7 @@
 #
 
 FROM i-docker.brickly.io/base:latest
-ENV version=1
+ENV version=2
 
 RUN apt-get install -yqq --force-yes --no-install-recommends \
       build-essential python python-dev python-virtualenv

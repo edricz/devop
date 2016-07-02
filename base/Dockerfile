@@ -14,7 +14,7 @@
 #
 
 FROM debian:jessie
-ENV version=1
+ENV version=2
 
 # enable non-interactive mode for apt-get
 ENV DEBIAN_FRONTEND=noninteractive
