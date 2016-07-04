@@ -14,7 +14,7 @@
 #
 
 FROM i-docker.brickly.io/etcd:latest
-ENV version=3
+ENV version=4
 
 # add our user and group first to make sure their IDs get assigned consistently
 # regardless of whatever dependencies get added
