@@ -83,7 +83,7 @@ create_raid() {
 # determine the number of local drives
 # ebs volumes are assumed to occupy xvd[f-p]
 root_device=$(basename $(df -h / |tail -n 1 |awk '{print $1}') |sed 's|[0-9]||')
-drives=($(ls /dev/xvd* |grep -v xvd[f-p] |grep -v ${root_device}))
+drives=($(ls /dev/xvd* |grep -v xvd[f-p] |grep -v ${root_device})) || true
 
 # bail if no drives available or system was previously initialized
 if [ ${#drives[@]} -eq 0 ] ; then

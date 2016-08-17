@@ -41,6 +41,6 @@
       DB_USER: "{{ item.db_user }}"
       DB_PASS: "{{ item.db_pass }}"
       DB_PORT: "{{ item.db_port }}"
-      DB_HOST: "i-services.{{ internal_domain }}"
+      DB_HOST: "{{ item.db_host }}"
   with_items: "{{ www_services }}"
 

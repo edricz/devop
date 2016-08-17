@@ -20,7 +20,7 @@
     zone: "{{ external_domain }}"
     type: A
     overwrite: yes
-    record: "{{ ansible_eth0.ipv4.address.split('.')[1] }}.{{ external_domain }}"
+    record: "{{ ansible_default_ipv4.address.split('.')[1] }}.{{ external_domain }}"
     value: "{{ inventory_hostname }}"
     ttl: 30
     # Routing policy
@@ -36,8 +36,8 @@
     zone: "{{ internal_domain }}"
     type: A
     overwrite: yes
-    record: "i-{{ ansible_eth0.ipv4.address.split('.')[1] }}.{{ internal_domain }}"
-    value: "{{ ansible_eth0.ipv4.address }}"
+    record: "i-{{ ansible_default_ipv4.address.split('.')[1] }}.{{ internal_domain }}"
+    value: "{{ ansible_default_ipv4.address }}"
     ttl: 30
     # Routing policy
     identifier: "{{ hostvars[inventory_hostname]['ec2_tag_Name'] }}"

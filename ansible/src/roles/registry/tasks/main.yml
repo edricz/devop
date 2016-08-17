@@ -32,6 +32,6 @@
   notify: [ 'Restart registry' ]
 
 - name: Deploy registry container
-  debug: msg="Starting registry container in {{ ansible_eth0.ipv4.address }}"
+  debug: msg="Starting registry container in {{ ansible_default_ipv4.address }}"
   notify: [ 'Start registry' ]
   changed_when: true

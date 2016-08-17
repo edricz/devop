@@ -1,20 +1,26 @@
 ---
 
-# # Ubuntu 16.04 does not install python2 by default
-# - name: Install Python2
-#   hosts: tag_env_ops
-#   remote_user: ubuntu
-#   become: True
-#   gather_facts: False
-#   tasks:
-#     - raw: apt-get update && apt-get install -y python
-
 - name: Launch AWS instances
   hosts: localhost
   connection: local
   gather_facts: False
   roles:
     - aws
+
+- name: Prepare Linux instances
+  hosts: tag_env_ops
+  gather_facts: False 
+  remote_user: ubuntu
+  become: True
+  tasks: 
+    - name: Install Python 2.7
+      raw: |
+        version=$(/usr/bin/python --version 2>&1 /dev/stdout | awk {'$2'} |awk -F'.' {'print $1 "." $2'})
+        if [ x$version != "x2.7" ]; then
+            apt-get update -qq
+            apt-get install -yqq python2.7
+            ln -sf /usr/bin/python2.7 /usr/bin/python
+        fi
 
 - name: Bootstrap ops instances
   hosts: tag_env_ops

@@ -11,7 +11,7 @@
     tty: True
     net: bridge
     env:
-      ETCD_HOST: "{{ ansible_eth0.ipv4.address }}:4001"
-      HOST_IP: "{{ ansible_eth0.ipv4.address }}"
+      ETCD_HOST: "{{ ansible_default_ipv4.address }}:4001"
+      HOST_IP: "{{ ansible_default_ipv4.address }}"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

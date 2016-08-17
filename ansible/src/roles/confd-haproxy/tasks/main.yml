@@ -155,6 +155,6 @@
     pull: always
     net: host
     env:
-      ETCD_HOST: "{{ ansible_eth0.ipv4.address }}:4001"
+      ETCD_HOST: "{{ ansible_default_ipv4.address }}:4001"
     volumes:
       - /etc/confd:/etc/confd
